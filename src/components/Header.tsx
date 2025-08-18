@@ -6,11 +6,16 @@ function Header() {
 
   return (
     <header className="flex justify-between items-center h-[72px] px-4 sticky bg-white">
-      <button onClick={() => navigate(-1)}>
+      <button
+        className="cursor-pointer"
+        onClick={() => navigate(-1)}
+        type="button"
+        aria-label="뒤로 가기"
+      >
         <ChevronLeft />
       </button>
       <h1 className="title">Header</h1>
-      <Link to="/my">
+      <Link to="/my" title="마이 페이지">
         <User />
       </Link>
     </header>
