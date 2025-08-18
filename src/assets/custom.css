@@ -32,9 +32,11 @@
   font-style: normal;
 }
 
-body * {
-  @apply text-text;
-  font-family: 'Pretendard Variable', sans-serif;
+@layer base {
+  body * {
+    @apply text-sm text-text;
+    font-family: 'Pretendard Variable', sans-serif;
+  }
 }
 
 @layer components {
