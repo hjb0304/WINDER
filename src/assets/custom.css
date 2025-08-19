@@ -45,7 +45,7 @@
     @apply text-[22px] font-bold;
   }
 
-  .subTitle {
+  .sub-title {
     @apply text-lg font-semibold;
   }
 
