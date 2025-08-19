@@ -2,6 +2,7 @@ import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
 import AppRoutes from '@/routes';
 import { useLocation } from 'react-router-dom';
+import RecordButton from '@/components/RecordButton';
 
 function App() {
   const { pathname } = useLocation();
@@ -17,6 +18,7 @@ function App() {
         <AppRoutes />
       </main>
       {pathname !== '/login' && pathname !== '/signup' && <Navigation />}
+      <RecordButton />
     </div>
   );
 }
