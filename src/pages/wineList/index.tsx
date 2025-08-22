@@ -1,10 +1,38 @@
 import Card from '@/components/Card';
 import Input from '@/components/Input';
 import Select from '@/components/Select';
+import type { APIWineInfo, WineInfo } from '@/type/wine';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 function WineListPage() {
+  const [data, setData] = useState<WineInfo[] | null>();
+
   const wineOptions = ['전체', '레드', '화이트', '로제', '스파클링'];
   const sortOptions = ['최신순', '이름순'];
+
+  const getWineData = async (type: string) => {
+    try {
+      const res = await axios.get<APIWineInfo[]>(`https://api.sampleapis.com/wines/${type}`);
+      const newData = res.data?.map(
+        (data: APIWineInfo): WineInfo => ({
+          id: data.id,
+          name: data.wine,
+          country: data.location.split('')[0],
+          imgURL: data.image,
+          rating: data.rating.average,
+        }),
+      );
+
+      setData(newData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getWineData('reds');
+  }, []);
 
   return (
     <>
@@ -22,7 +50,9 @@ function WineListPage() {
         />
       </section>
       <section>
-        <Card name="Catena Malbec" type="Malbec" date="2025-08-15" showCloseButton></Card>
+        {data?.map((item) => (
+          <Card key={item.id} imgURL={item.imgURL} name={item.name} rating={item.rating}></Card>
+        ))}
       </section>
     </>
   );
