@@ -1,4 +1,5 @@
 import { Star, X } from 'lucide-react';
+import type { RefObject } from 'react';
 
 interface CardProps {
   imgURL: string;
@@ -7,11 +8,12 @@ interface CardProps {
   rating?: string;
   date?: string;
   showCloseButton?: boolean;
+  ref: RefObject<HTMLDivElement | null> | null;
 }
 
-function Card({ imgURL, name, type, rating, date, showCloseButton }: CardProps) {
+function Card({ imgURL, name, type, rating, date, showCloseButton, ref }: CardProps) {
   return (
-    <div className="flex items-center px-3 py-2 bg-white border-b-1 border-lightgray">
+    <div className="flex items-center px-3 py-2 bg-white border-b-1 border-lightgray" ref={ref}>
       <div className="rounded-lg me-2 w-14 aspect-square shrink-0">
         <img src={imgURL} alt={name} />
       </div>
@@ -22,7 +24,7 @@ function Card({ imgURL, name, type, rating, date, showCloseButton }: CardProps) 
             type
           ) : rating ? (
             <div className="flex items-center gap-1">
-              <Star size={16} fill="var(--color-primary)" color="transparent" />
+              <Star size={15} fill="var(--color-primary)" color="transparent" />
               <span>{rating}</span>
             </div>
           ) : (
