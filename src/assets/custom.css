@@ -38,6 +38,9 @@
     @apply text-sm text-text;
     font-family: 'Pretendard Variable', sans-serif;
   }
+  img {
+    @apply max-h-full;
+  }
 }
 
 @layer components {
