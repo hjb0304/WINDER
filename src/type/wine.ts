@@ -7,11 +7,12 @@ export interface APIWineInfo {
 }
 
 export interface WineInfo {
-  id: number;
+  id: string;
   name: string;
   country: string;
   imgURL: string;
   rating: string;
+  type: string;
 }
 
 export interface myWineInfo extends WineInfo {}
