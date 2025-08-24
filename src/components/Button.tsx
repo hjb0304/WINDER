@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
+import { Link } from 'react-router-dom';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: string;
@@ -6,6 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   outlined?: boolean;
   full?: boolean;
   submit?: boolean;
+  to?: string;
 }
 
 function Button({
@@ -17,6 +19,7 @@ function Button({
   disabled,
   className,
   onClick,
+  to,
   ...props
 }: ButtonProps) {
   const cursor = !disabled ? 'cursor-pointer' : '';
@@ -30,14 +33,25 @@ function Button({
   const height = size === 'sm' ? 'h-10' : 'h-12';
 
   return (
-    <button
-      className={`font-medium border-1 px-4 rounded-lg transition ease-in-out duration-200 ${cursor} ${width} ${color} ${height} ${className}`}
-      type={submit ? 'submit' : 'button'}
-      onClick={onClick}
-      {...props}
-    >
-      {children}
-    </button>
+    <>
+      {to ? (
+        <Link
+          className={`content-center font-medium border-1 px-4 rounded-lg transition ease-in-out duration-200 ${cursor} ${width} ${color} ${height} ${className}`}
+          to={to}
+        >
+          {children}
+        </Link>
+      ) : (
+        <button
+          className={`font-medium border-1 px-4 rounded-lg transition ease-in-out duration-200 ${cursor} ${width} ${color} ${height} ${className}`}
+          type={submit ? 'submit' : 'button'}
+          onClick={onClick}
+          {...props}
+        >
+          {children}
+        </button>
+      )}
+    </>
   );
 }
 
