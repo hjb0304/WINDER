@@ -1,5 +1,6 @@
 import { Star, X } from 'lucide-react';
 import type { RefObject } from 'react';
+import { Link } from 'react-router-dom';
 
 interface CardProps {
   imgURL: string;
@@ -8,12 +9,17 @@ interface CardProps {
   rating?: string;
   date?: string;
   showCloseButton?: boolean;
-  ref: RefObject<HTMLDivElement | null> | null;
+  ref: RefObject<HTMLAnchorElement | null> | null;
+  url: string;
 }
 
-function Card({ imgURL, name, type, rating, date, showCloseButton, ref }: CardProps) {
+function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: CardProps) {
   return (
-    <div className="flex items-center px-3 py-2 bg-white border-b-1 border-lightgray" ref={ref}>
+    <Link
+      to={url}
+      className="flex items-center px-3 py-2 bg-white border-b-1 border-lightgray"
+      ref={ref}
+    >
       <div className="rounded-lg me-2 w-14 aspect-square shrink-0">
         <img src={imgURL} alt={name} />
       </div>
@@ -38,7 +44,7 @@ function Card({ imgURL, name, type, rating, date, showCloseButton, ref }: CardPr
           <X color="var(--color-gray)" />
         </button>
       )}
-    </div>
+    </Link>
   );
 }
 
