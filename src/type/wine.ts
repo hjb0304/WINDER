@@ -15,4 +15,10 @@ export interface WineInfo {
   type: string;
 }
 
-export interface myWineInfo extends WineInfo {}
+export interface myWineInfo extends Omit<WineInfo, 'id' | 'imgURL'> {
+  id: number;
+  imgURL: string[];
+  year: number;
+  date: string;
+  memo: string;
+}
