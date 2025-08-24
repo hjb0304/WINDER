@@ -18,7 +18,7 @@ function WineListPage() {
     { text: '별점순', value: 'rating' },
   ];
   const observer = useRef<IntersectionObserver | null>(null);
-  const observerRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<HTMLAnchorElement | null>(null);
   const PER_PAGE = 10;
   const wineTypes = ['reds', 'whites', 'rose', 'sparkling'];
 
@@ -31,7 +31,6 @@ function WineListPage() {
   const [search, setSearch] = useState('');
 
   // 와인 데이터 불러오기
-
   const getWineData = async () => {
     try {
       setLoading(true);
@@ -148,6 +147,7 @@ function WineListPage() {
               imgURL={item.imgURL}
               name={item.name}
               rating={item.rating}
+              url={`${item.id}`}
             ></Card>
           ))}
           <div></div>
