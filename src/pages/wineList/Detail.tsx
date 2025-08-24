@@ -5,14 +5,14 @@ import type { APIWineInfo, WineInfo } from '@/type/wine';
 import axios from 'axios';
 import { Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-function WineDetail() {
+function WineDetailPage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<WineInfo | null>();
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const id = useLocation().pathname.split('/')[2];
+  const { id } = useParams();
   const name: string[] | null = data?.name ? data?.name.split(' ') : null;
   const last = name?.[name.length - 1];
 
@@ -21,21 +21,21 @@ function WineDetail() {
     try {
       setLoading(true);
       const res = await axios.get<APIWineInfo[]>(
-        `https://api.sampleapis.com/wines/${id.split('-')[0]}`,
+        `https://api.sampleapis.com/wines/${id?.split('-')[0]}`,
       );
 
       const wineData: APIWineInfo | undefined = res.data?.find(
-        (item) => item.id === Number(id.split('-')[1]),
+        (item) => item.id === Number(id?.split('-')[1]),
       );
 
       const newData: WineInfo | null = wineData
         ? {
-            id: id,
+            id: id ? id : '',
             name: wineData?.wine,
             country: wineData.location.split('\n')[0],
             imgURL: wineData.image,
             rating: wineData.rating.average,
-            type: id.split('-')[0],
+            type: id ? id?.split('-')[0] : '',
           }
         : null;
 
@@ -68,7 +68,7 @@ function WineDetail() {
           </div>
           <div className="flex flex-col gap-1">
             <SubTitle>{data?.name ? data?.name : ''}</SubTitle>
-            <p className="text-subtext">{`${isNaN(Number(last)) ? null : last + ' - '}${data?.type} - ${data?.country}`}</p>
+            <p className="text-subtext">{`${isNaN(Number(last)) ? '' : last + ' - '}${data?.type} - ${data?.country}`}</p>
             <div className="flex items-center gap-1">
               <Star size={15} fill="var(--color-primary)" color="transparent" />
               <span>{data?.rating}</span>
@@ -101,4 +101,4 @@ function WineDetail() {
   );
 }
 
-export default WineDetail;
+export default WineDetailPage;
