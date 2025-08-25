@@ -3,9 +3,8 @@ import RangeSlider from '@/components/RangeSlider';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import type { MyWineInfo } from '@/type/wine';
-import { Camera } from 'lucide-react';
+import { Camera, Star, StarHalf } from 'lucide-react';
 import { useState } from 'react';
-import { Range } from 'react-range';
 
 function RecordsNewPage() {
   const wineOptions = [
@@ -17,6 +16,39 @@ function RecordsNewPage() {
 
   const [data, setdata] = useState<MyWineInfo | null>();
   const [values, setValues] = useState([0]);
+  const [rating, setRating] = useState(0);
+
+  // 각 별점 아이콘
+  const star = (idx: number) =>
+    rating >= idx + 1 ? (
+      <Star fill="var(--color-primary)" color="var(--color-primary)" />
+    ) : rating >= idx + 0.5 ? (
+      <div className="relative">
+        <StarHalf fill="var(--color-primary)" color="var(--color-primary)" />
+        <div className="absolute top-0 right-0 w-1/2 h-full overflow-hidden">
+          <Star color="var(--color-lightgray)" className="absolute right-0" />
+        </div>
+      </div>
+    ) : (
+      <Star color="var(--color-lightgray)" />
+    );
+
+  // 별점 반환
+  const stars = Array.from({ length: 5 }, (_, i) => (
+    <div className="relative">
+      <button
+        className="absolute left-0 w-1/2 h-full cursor-pointer"
+        type="button"
+        onClick={() => setRating(i + 0.5)}
+      ></button>
+      <button
+        className="absolute right-0 w-1/2 h-full cursor-pointer"
+        type="button"
+        onClick={() => setRating(i + 1)}
+      ></button>
+      <div className="pointer-events-none">{star(i)}</div>
+    </div>
+  ));
 
   return (
     <form className="flex flex-col gap-6">
@@ -96,6 +128,7 @@ function RecordsNewPage() {
         <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
           별점
         </span>
+        <div className="flex gap-1">{stars}</div>
       </section>
       <section>
         <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
