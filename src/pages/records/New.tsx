@@ -9,6 +9,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
 import { getMonth, getYear } from 'date-fns';
+import axios from 'axios';
 
 function RecordsNewPage() {
   const wineOptions = [
@@ -18,10 +19,10 @@ function RecordsNewPage() {
     { text: '스파클링', value: 'sparkling' },
   ];
 
-  const [data, setdata] = useState<MyWineInfo | null>();
+  const [imgURL, setImgURL] = useState([]);
   const [values, setValues] = useState([0]);
   const [rating, setRating] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   // 각 별점 아이콘
   const star = (idx: number) =>
@@ -55,8 +56,27 @@ function RecordsNewPage() {
     </div>
   ));
 
+  // 와인 기록 등록
+  const handleSubmit = async () => {
+    // 이미지 업로드
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', import.meta.env.CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
+    } catch (error) {
+      console.error('업로드에 실패했습니다.', error);
+    }
+  };
+
   return (
-    <form className="flex flex-col gap-6">
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
       <section>
         <Input
           id="name"
@@ -136,10 +156,14 @@ function RecordsNewPage() {
         <div className="flex gap-1">{stars}</div>
       </section>
       <section>
-        <span className="block mb-2 label after:content-['*'] after:text-error after:ms-1">
+        <label
+          className="block mb-2 label after:content-['*'] after:text-error after:ms-1"
+          htmlFor="date"
+        >
           마신 날짜
-        </span>
+        </label>
         <DatePicker
+          id="date"
           locale={ko}
           showIcon
           dateFormat="yyyy.MM.dd"
@@ -182,33 +206,20 @@ function RecordsNewPage() {
       <section>
         <span className="inline-block mb-2 label">사진</span>
         <div className="flex gap-2">
-          <div className="overflow-hidden rounded-lg aspect-square grow-1">
-            {data?.imgURL ? (
-              <img src={data?.imgURL[0]} alt="와인 이미지1" />
-            ) : (
-              <div className="flex items-center justify-center h-full bg-lightgray">
-                <Camera color="var(--color-subtext)" size={36} />
-              </div>
-            )}
-          </div>
-          <div className="overflow-hidden rounded-lg aspect-square grow-1">
-            {data?.imgURL ? (
-              <img src={data?.imgURL[1]} alt="와인 이미지2" />
-            ) : (
-              <div className="flex items-center justify-center h-full bg-lightgray">
-                <Camera color="var(--color-subtext)" size={36} />
-              </div>
-            )}
-          </div>
-          <div className="overflow-hidden rounded-lg aspect-square grow-1">
-            {data?.imgURL ? (
-              <img src={data?.imgURL[2]} alt="와인 이미지3" />
-            ) : (
-              <div className="flex items-center justify-center h-full bg-lightgray">
-                <Camera color="var(--color-subtext)" size={36} />
-              </div>
-            )}
-          </div>
+          {Array.from({ length: 3 }, (_, i) => (
+            <div className="overflow-hidden rounded-lg aspect-square grow-1">
+              <label htmlFor={'img' + i}>
+                {imgURL[i] ? (
+                  <img src={imgURL[i]} alt={'와인 이미지' + i} />
+                ) : (
+                  <div className="flex items-center justify-center h-full bg-lightgray">
+                    <Camera color="var(--color-subtext)" size={36} />
+                  </div>
+                )}
+              </label>
+              <input type="file" id={'img' + i} name={'img' + i} className="hidden"></input>
+            </div>
+          ))}
         </div>
       </section>
     </form>
