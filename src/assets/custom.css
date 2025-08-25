@@ -39,7 +39,7 @@
     font-family: 'Pretendard Variable', sans-serif;
   }
   img {
-    @apply max-h-full w-full object-contain;
+    @apply object-contain w-full max-h-full;
   }
 }
 
@@ -59,4 +59,28 @@
   .sub {
     @apply text-xs;
   }
+}
+
+.react-datepicker {
+  @apply border-lightgray;
+}
+
+.react-datepicker__header {
+  @apply bg-white border-lightgray;
+}
+
+.react-datepicker__day.react-datepicker__day--selected {
+  @apply text-white bg-primary;
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply bg-[#E4CCD2];
+}
+
+.react-datepicker__day {
+  @apply text-text;
+}
+
+.react-datepicker__view-calendar-icon input {
+  padding: 6px 10px 5px 28px;
 }

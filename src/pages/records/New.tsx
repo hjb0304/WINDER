@@ -3,8 +3,12 @@ import RangeSlider from '@/components/RangeSlider';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import type { MyWineInfo } from '@/type/wine';
-import { Camera, Star, StarHalf } from 'lucide-react';
+import { Calendar, Camera, ChevronLeft, ChevronRight, Star, StarHalf } from 'lucide-react';
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { ko } from 'date-fns/locale';
+import { getMonth, getYear } from 'date-fns';
 
 function RecordsNewPage() {
   const wineOptions = [
@@ -17,6 +21,7 @@ function RecordsNewPage() {
   const [data, setdata] = useState<MyWineInfo | null>();
   const [values, setValues] = useState([0]);
   const [rating, setRating] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   // 각 별점 아이콘
   const star = (idx: number) =>
@@ -95,31 +100,31 @@ function RecordsNewPage() {
         ></Input>
       </section>
       <section>
-        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           단맛
         </span>
         <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           산미
         </span>
         <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           탄닌
         </span>
         <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           바디
         </span>
         <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           여운
         </span>
         <RangeSlider values={values} onChange={(values) => setValues(values)} />
@@ -131,10 +136,39 @@ function RecordsNewPage() {
         <div className="flex gap-1">{stars}</div>
       </section>
       <section>
-        <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
+        <span className="block mb-2 label after:content-['*'] after:text-error after:ms-1">
           마신 날짜
         </span>
-        <Input id="" name=""></Input>
+        <DatePicker
+          locale={ko}
+          showIcon
+          dateFormat="yyyy.MM.dd"
+          selected={selectedDate}
+          onChange={(date) => setSelectedDate(date)}
+          icon={<Calendar className="mt-2" />}
+          className="bg-white rounded-lg outline-1 outline-lightgray h-11"
+          renderCustomHeader={({ date, decreaseMonth, increaseMonth }) => (
+            <div className="flex items-center justify-center gap-2">
+              <button
+                type="button"
+                className="cursor-pointer"
+                aria-label="이전 달로 이동"
+                onClick={decreaseMonth}
+              >
+                <ChevronLeft color="var(--color-subtext)" />
+              </button>
+              {`${getYear(date)}년 ${getMonth(date) + 1}월`}
+              <button
+                type="button"
+                className="cursor-pointer"
+                aria-label="다음 달로 이동"
+                onClick={increaseMonth}
+              >
+                <ChevronRight color="var(--color-subtext)" />
+              </button>
+            </div>
+          )}
+        />
       </section>
       <section>
         <Textarea
