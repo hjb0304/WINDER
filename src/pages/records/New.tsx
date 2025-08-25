@@ -1,9 +1,11 @@
 import Input from '@/components/Input';
+import RangeSlider from '@/components/RangeSlider';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import type { MyWineInfo } from '@/type/wine';
 import { Camera } from 'lucide-react';
 import { useState } from 'react';
+import { Range } from 'react-range';
 
 function RecordsNewPage() {
   const wineOptions = [
@@ -14,6 +16,7 @@ function RecordsNewPage() {
   ];
 
   const [data, setdata] = useState<MyWineInfo | null>();
+  const [values, setValues] = useState([0]);
 
   return (
     <form className="flex flex-col gap-6">
@@ -60,29 +63,34 @@ function RecordsNewPage() {
         ></Input>
       </section>
       <section>
-        <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
           단맛
         </span>
+        <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
           산미
         </span>
+        <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
           탄닌
         </span>
+        <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
           바디
         </span>
+        <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
-        <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
+        <span className="inline-block mb-6 label after:content-['*'] after:text-error after:ms-1">
           여운
         </span>
+        <RangeSlider values={values} onChange={(values) => setValues(values)} />
       </section>
       <section>
         <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
