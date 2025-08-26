@@ -4,7 +4,7 @@ import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import type { MyWineInfo } from '@/type/wine';
 import { Calendar, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
@@ -13,12 +13,17 @@ import axios from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import Button from '@/components/Button';
 import Rating from '@/components/Rating';
-import { recordWine } from '@/api/wine';
+import { editWine, getWine, recordWine } from '@/api/wine';
 import Modal from '@/components/Modal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 function RecordsNewPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname.split('/')[2];
+  const params = useParams();
+  const id = params.id;
+  console.log(pathname, params);
 
   const wineOptions = [
     { text: '레드', value: 'reds' },
@@ -32,11 +37,30 @@ function RecordsNewPage() {
     formState: { errors },
     control,
     handleSubmit,
+    reset,
   } = useForm<MyWineInfo>();
 
   const [preview, setPreview] = useState<string[]>([]);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isFailModalOpen, setisFailModalOpen] = useState(false);
+
+  // 와인 기록 상세 조회
+  const getWineData = async () => {
+    try {
+      const data = id ? await getWine(id) : null;
+      if (data) {
+        reset(data);
+        setPreview(data?.imgURL ?? []);
+      }
+    } catch (error) {
+      console.error('데이터를 불러올 수 없습니다.', error);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    getWineData();
+  }, []);
 
   const onSubmit = async (data: MyWineInfo) => {
     // 이미지 업로드
@@ -44,6 +68,8 @@ function RecordsNewPage() {
       ? await Promise.all(
           data.imgURL.map(async (file) => {
             if (!file) return null;
+            // 이미 업로드된(string)인 경우 그대로 사용
+            if (typeof file === 'string') return file;
 
             const formData = new FormData();
             formData.append('file', file);
@@ -67,12 +93,16 @@ function RecordsNewPage() {
     // 업로드된 url로 교체
     const newData = { ...data, imgURL: newURL.filter((url) => url !== null) };
 
-    // 와인 기록 등록
+    // 와인 기록 등록/수정
     try {
-      await recordWine(newData);
+      if (pathname === 'new') {
+        await recordWine(newData);
+      } else if (pathname === 'edit' && id) {
+        await editWine(id, newData);
+      }
       setIsSuccessModalOpen(true);
     } catch (error) {
-      console.error('와인 기록 등록에 실패했습니다.', error);
+      console.error(error);
       setisFailModalOpen(true);
     }
   };
@@ -317,12 +347,14 @@ function RecordsNewPage() {
           </div>
         </section>
         <div className="flex justify-end">
-          <Button submit>기록하기</Button>
+          <Button submit size="sm">
+            {pathname === 'new' ? '기록하기' : '저장하기'}
+          </Button>
         </div>
       </form>
       <Modal
         isOpen={isSuccessModalOpen}
-        message={`와인 기록이 등록되었습니다.`}
+        message={`와인 기록이 ${pathname === 'new' ? '등록' : '수정'}되었습니다.`}
         handleCancel={() => setIsSuccessModalOpen(false)}
         handleConfirm={() => {
           setIsSuccessModalOpen(false);
@@ -332,7 +364,7 @@ function RecordsNewPage() {
       />
       <Modal
         isOpen={isFailModalOpen}
-        message={`와인 기록 등록에 실패했습니다.`}
+        message={`와인 기록 ${pathname === 'new' ? '등록' : '수정'}에 실패했습니다.`}
         handleCancel={() => setisFailModalOpen(false)}
         handleConfirm={() => setisFailModalOpen(false)}
         hideCancelButton
