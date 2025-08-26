@@ -46,7 +46,7 @@ function WineListPage() {
             name: data.wine,
             country: data.location.split('\n')[0],
             imgURL: data.image,
-            rating: data.rating.average,
+            rating: Number(data.rating.average),
             type: wineTypes[i],
           }),
         ),
