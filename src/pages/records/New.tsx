@@ -13,6 +13,7 @@ import axios from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import Button from '@/components/Button';
 import Rating from '@/components/Rating';
+import { recordWine } from '@/api/wine';
 
 function RecordsNewPage() {
   const wineOptions = [
@@ -32,9 +33,7 @@ function RecordsNewPage() {
 
   const [preview, setPreview] = useState<string[]>([]);
 
-  // 와인 기록 등록
   const onSubmit = async (data: MyWineInfo) => {
-    console.log('제출');
     // 이미지 업로드
     const newURL = data.imgURL
       ? await Promise.all(
@@ -43,11 +42,11 @@ function RecordsNewPage() {
 
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('upload_preset', import.meta.env.CLOUDINARY_UPLOAD_PRESET);
+            formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
 
             try {
               const res = await axios.post(
-                `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+                `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
                 formData,
                 { headers: { 'Content-Type': 'multipart/form-data' } },
               );
@@ -62,7 +61,13 @@ function RecordsNewPage() {
 
     // 업로드된 url로 교체
     const newData = { ...data, imgURL: newURL.filter((url) => url !== null) };
-    console.log(newData);
+
+    // 와인 기록 등록
+    try {
+      await recordWine(newData);
+    } catch (error) {
+      console.error('와인 기록 등록에 실패했습니다.', error);
+    }
   };
 
   return (
