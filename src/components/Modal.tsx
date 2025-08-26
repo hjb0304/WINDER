@@ -26,7 +26,7 @@ function Modal({ isOpen, message, handleCancel, handleConfirm, hideCancelButton 
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center w-full h-full bg-black/70"
+      className="fixed inset-0 flex items-center justify-center w-full h-full bg-black/70 z-10"
       onClick={() => {
         handleCancel();
       }}
