@@ -43,13 +43,14 @@ function Modal({ isOpen, message, handleCancel, handleConfirm, hideCancelButton 
           <X />
         </button>
         <p className="mb-8">{message}</p>
-        <div>
+        <div className="flex gap-2">
           {!hideCancelButton && (
             <Button
               outlined
               onClick={() => {
                 handleCancel();
               }}
+              size="sm"
             >
               취소
             </Button>
