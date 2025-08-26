@@ -13,7 +13,7 @@ function App() {
     >
       {pathname !== '/login' && pathname !== '/signup' && <Header />}
       <main
-        className={`flex flex-col p-4 pt-0 ${pathname === '/login' || pathname === '/signup' ? 'gap-8' : 'gap-6'}`}
+        className={`flex flex-col px-4 pb-[72px] ${pathname === '/login' || pathname === '/signup' ? 'gap-8' : 'gap-6'}`}
       >
         <AppRoutes />
       </main>
