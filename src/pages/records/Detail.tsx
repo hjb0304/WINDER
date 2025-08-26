@@ -1,15 +1,15 @@
+import { getWine } from '@/api/wine';
 import Button from '@/components/Button';
 import FavoriteButton from '@/components/FavoriteButton';
 import SubTitle from '@/components/SubTitle';
-import type { myWineInfo } from '@/type/wine';
-import axios from 'axios';
+import type { MyWineInfo } from '@/type/wine';
 import { Star, Wine } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 function RecordsDetailPage() {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<myWineInfo | null>();
+  const [data, setData] = useState<MyWineInfo | null>();
   const [isFavorite, setIsFavorite] = useState(false);
 
   const { id } = useParams();
@@ -18,8 +18,8 @@ function RecordsDetailPage() {
   const getWineData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get<myWineInfo[]>(`/${id}`);
-      setData(res.data);
+      const data = id ? await getWine(id) : null;
+      setData(data);
     } catch (error) {
       console.error('데이터를 불러올 수 없습니다.');
     } finally {
@@ -104,11 +104,19 @@ function RecordsDetailPage() {
               </div>
             </div>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
             <Button
               to={`/records/new?name=${data?.name}&country=${data?.country}&type=${data?.type}&imgurl=${data?.imgURL}`}
+              size="sm"
             >
-              기록하기
+              수정
+            </Button>
+            <Button
+              to={`/records/new?name=${data?.name}&country=${data?.country}&type=${data?.type}&imgurl=${data?.imgURL}`}
+              outlined
+              size="sm"
+            >
+              삭제
             </Button>
           </div>
         </section>
