@@ -3,12 +3,14 @@ import type { MyWineInfo } from '@/type/wine';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 
@@ -48,4 +50,16 @@ export async function getWine(id: string): Promise<MyWineInfo | null> {
 
   if (!snap) return null;
   return { id: snap.id, ...(snap.data() as MyWineInfo) };
+}
+
+// 와인 기록 수정
+export async function editWine(id: string, data: Partial<MyWineInfo>) {
+  const docRef = doc(db, 'wines', id);
+  await updateDoc(docRef, data);
+}
+
+// 와인 기록 삭제
+export async function deleteWine(id: string) {
+  const docRef = doc(db, 'wines', id);
+  await deleteDoc(docRef);
 }
