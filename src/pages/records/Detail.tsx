@@ -3,7 +3,7 @@ import Button from '@/components/Button';
 import FavoriteButton from '@/components/FavoriteButton';
 import SubTitle from '@/components/SubTitle';
 import type { MyWineInfo } from '@/type/wine';
-import { Star, Wine } from 'lucide-react';
+import { BottleWine, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -38,11 +38,11 @@ function RecordsDetailPage() {
       ) : (
         <section className="flex flex-col gap-6">
           <div className="relative h-48 overflow-hidden rounded-lg">
-            {data?.imgURL ? (
+            {data?.imgURL?.[0] ? (
               <img src={data?.imgURL[0]} alt={data?.name} />
             ) : (
               <div className="flex items-center justify-center h-full bg-lightgray">
-                <Wine size={60} color="var(--color-subtext)" />
+                <BottleWine size={60} color="var(--color-subtext)" />
               </div>
             )}
             <FavoriteButton
@@ -54,7 +54,13 @@ function RecordsDetailPage() {
           </div>
           <div className="flex flex-col gap-1">
             <SubTitle>{data?.name ? data?.name : ''}</SubTitle>
-            <p className="text-subtext">{`${data?.year} - ${data?.type} - ${data?.country}`}</p>
+            <p className="text-subtext">
+              {data?.year && <span className="after:content-['-'] after:mx-1">{data.year}</span>}
+              <span>{data?.type}</span>
+              {data?.country && (
+                <span className="before:content-['-'] before:mx-1">{data.country}</span>
+              )}
+            </p>
             <div className="flex items-center gap-1">
               <Star size={15} fill="var(--color-primary)" color="transparent" />
               <span>{data?.rating}</span>
@@ -75,47 +81,27 @@ function RecordsDetailPage() {
           <div>
             <span className="inline-block mb-2 label">사진</span>
             <div className="flex gap-2">
-              <div className="overflow-hidden rounded-lg aspect-square grow-1">
-                {data?.imgURL ? (
-                  <img src={data?.imgURL[0]} alt={data?.name} />
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-lightgray">
-                    <Wine color="var(--color-subtext)" size={36} />
-                  </div>
-                )}
-              </div>
-              <div className="overflow-hidden rounded-lg aspect-square grow-1">
-                {data?.imgURL ? (
-                  <img src={data?.imgURL[1]} alt={data?.name} />
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-lightgray">
-                    <Wine color="var(--color-subtext)" size={36} />
-                  </div>
-                )}
-              </div>
-              <div className="overflow-hidden rounded-lg aspect-square grow-1">
-                {data?.imgURL ? (
-                  <img src={data?.imgURL[2]} alt={data?.name} />
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-lightgray">
-                    <Wine color="var(--color-subtext)" size={36} />
-                  </div>
-                )}
-              </div>
+              {Array.from({ length: 3 }, (_, i) => (
+                <div className="overflow-hidden rounded-lg aspect-square flex-1" key={i}>
+                  {data?.imgURL?.[i] ? (
+                    <img src={data?.imgURL?.[i]} alt={data?.name} />
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-lightgray">
+                      <BottleWine color="var(--color-subtext)" size={36} />
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex justify-end gap-2">
             <Button
-              to={`/records/new?name=${data?.name}&country=${data?.country}&type=${data?.type}&imgurl=${data?.imgURL}`}
+              to={`/records/edit?name=${data?.name}&country=${data?.country}&type=${data?.type}&imgurl=${data?.imgURL}`}
               size="sm"
             >
               수정
             </Button>
-            <Button
-              to={`/records/new?name=${data?.name}&country=${data?.country}&type=${data?.type}&imgurl=${data?.imgURL}`}
-              outlined
-              size="sm"
-            >
+            <Button to={`/records/`} outlined size="sm">
               삭제
             </Button>
           </div>
