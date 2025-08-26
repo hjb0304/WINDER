@@ -3,13 +3,16 @@ import RangeSlider from '@/components/RangeSlider';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import type { MyWineInfo } from '@/type/wine';
-import { Calendar, Camera, ChevronLeft, ChevronRight, Star, StarHalf } from 'lucide-react';
+import { Calendar, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { ko } from 'date-fns/locale';
 import { getMonth, getYear } from 'date-fns';
 import axios from 'axios';
+import { Controller, useForm } from 'react-hook-form';
+import Button from '@/components/Button';
+import Rating from '@/components/Rating';
 
 function RecordsNewPage() {
   const wineOptions = [
@@ -19,141 +22,185 @@ function RecordsNewPage() {
     { text: '스파클링', value: 'sparkling' },
   ];
 
-  const [imgURL, setImgURL] = useState([]);
-  const [values, setValues] = useState([0]);
-  const [rating, setRating] = useState(0);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const {
+    register,
+    formState: { errors },
+    control,
+    setValue,
+    handleSubmit,
+  } = useForm<MyWineInfo>();
 
-  // 각 별점 아이콘
-  const star = (idx: number) =>
-    rating >= idx + 1 ? (
-      <Star fill="var(--color-primary)" color="var(--color-primary)" />
-    ) : rating >= idx + 0.5 ? (
-      <div className="relative">
-        <StarHalf fill="var(--color-primary)" color="var(--color-primary)" />
-        <div className="absolute top-0 right-0 w-1/2 h-full overflow-hidden">
-          <Star color="var(--color-lightgray)" className="absolute right-0" />
-        </div>
-      </div>
-    ) : (
-      <Star color="var(--color-lightgray)" />
-    );
-
-  // 별점 반환
-  const stars = Array.from({ length: 5 }, (_, i) => (
-    <div className="relative">
-      <button
-        className="absolute left-0 w-1/2 h-full cursor-pointer"
-        type="button"
-        onClick={() => setRating(i + 0.5)}
-      ></button>
-      <button
-        className="absolute right-0 w-1/2 h-full cursor-pointer"
-        type="button"
-        onClick={() => setRating(i + 1)}
-      ></button>
-      <div className="pointer-events-none">{star(i)}</div>
-    </div>
-  ));
+  const [preview, setPreview] = useState<string[]>([]);
 
   // 와인 기록 등록
-  const handleSubmit = async () => {
+  const onSubmit = async (data: MyWineInfo) => {
+    console.log('제출');
     // 이미지 업로드
+    const newURL = data.imgURL
+      ? await Promise.all(
+          data.imgURL.map(async (file) => {
+            if (!file[0]) return null;
 
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', import.meta.env.CLOUDINARY_UPLOAD_PRESET);
+            const formData = new FormData();
+            formData.append('file', file[0]);
+            formData.append('upload_preset', import.meta.env.CLOUDINARY_UPLOAD_PRESET);
 
-    try {
-      const res = await axios.post(
-        `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } },
-      );
-    } catch (error) {
-      console.error('업로드에 실패했습니다.', error);
-    }
+            try {
+              const res = await axios.post(
+                `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+                formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } },
+              );
+              return res.data.secure_url;
+            } catch (error) {
+              console.error('업로드에 실패했습니다.', error);
+              return null;
+            }
+          }),
+        )
+      : [];
+
+    // 업로드된 url로 교체
+    const newData = { ...data, imgURL: newURL.filter((url) => url !== null) };
+    console.log(newData);
   };
 
   return (
-    <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+    <form
+      className="flex flex-col gap-6"
+      onSubmit={handleSubmit(
+        (data) => {
+          console.log('제출', data);
+          (e) => e.preventDefault();
+        },
+        (errors) => console.log('Validation Errors', errors),
+      )}
+    >
       <section>
         <Input
           id="name"
-          name="name"
           label="와인 이름"
           labelClassName="label after:content-['*'] after:text-error after:ms-1"
           placeholder="와인 이름"
+          {...register('name', { required: '와인 이름을 입력해주세요.' })}
+          errorMessage={errors.name?.message}
         ></Input>
       </section>
       <section>
         <Input
           id="country"
-          name="country"
           label="원산지"
           labelClassName="label"
           placeholder="원산지"
+          {...register('country')}
         ></Input>
       </section>
       <section>
         <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
           종류
         </span>
-        <Select id="type" name="type" options={wineOptions} label="종류" className="w-full" />
+        <Select
+          id="type"
+          options={wineOptions}
+          label="종류"
+          className="w-full"
+          {...register('type')}
+        />
       </section>
       <section>
         <Input
           id="grape"
-          name="grape"
           label="품종"
           labelClassName="label"
           placeholder="품종"
+          {...register('grape')}
         ></Input>
       </section>
       <section>
         <Input
           id="year"
-          name="year"
           label="생산년도"
           labelClassName="label"
           placeholder="생산년도"
+          {...register('year')}
         ></Input>
       </section>
       <section>
         <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           단맛
         </span>
-        <RangeSlider values={values} onChange={(values) => setValues(values)} />
+        <Controller
+          name="notes.sweetness"
+          control={control}
+          defaultValue={0}
+          render={({ field }) => (
+            <RangeSlider values={[field.value ?? 0]} onChange={field.onChange} />
+          )}
+        />
       </section>
       <section>
         <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           산미
         </span>
-        <RangeSlider values={values} onChange={(values) => setValues(values)} />
+        <Controller
+          name="notes.acidity"
+          control={control}
+          defaultValue={0}
+          render={({ field }) => (
+            <RangeSlider values={[field.value ?? 0]} onChange={field.onChange} />
+          )}
+        />
       </section>
       <section>
         <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           탄닌
         </span>
-        <RangeSlider values={values} onChange={(values) => setValues(values)} />
+        <Controller
+          name="notes.tannin"
+          control={control}
+          defaultValue={0}
+          render={({ field }) => (
+            <RangeSlider values={[field.value ?? 0]} onChange={field.onChange} />
+          )}
+        />
       </section>
       <section>
         <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           바디
         </span>
-        <RangeSlider values={values} onChange={(values) => setValues(values)} />
+        <Controller
+          name="notes.body"
+          control={control}
+          defaultValue={0}
+          render={({ field }) => (
+            <RangeSlider values={[field.value ?? 0]} onChange={field.onChange} />
+          )}
+        />
       </section>
       <section>
         <span className="inline-block mb-9 label after:content-['*'] after:text-error after:ms-1">
           여운
         </span>
-        <RangeSlider values={values} onChange={(values) => setValues(values)} />
+        <Controller
+          name="notes.finish"
+          control={control}
+          defaultValue={0}
+          render={({ field }) => (
+            <RangeSlider values={[field.value ?? 0]} onChange={field.onChange} />
+          )}
+        />
       </section>
       <section>
         <span className="inline-block mb-2 label after:content-['*'] after:text-error after:ms-1">
           별점
         </span>
-        <div className="flex gap-1">{stars}</div>
+        <Controller
+          name="rating"
+          control={control}
+          rules={{ required: '별점을 선택해주세요.' }}
+          render={({ field }) => <Rating value={field.value ?? 0} onChange={field.onChange} />}
+        />
+        {errors.rating && <p className="text-xs text-error pt-1">{errors.rating.message}</p>}
       </section>
       <section>
         <label
@@ -162,66 +209,103 @@ function RecordsNewPage() {
         >
           마신 날짜
         </label>
-        <DatePicker
-          id="date"
-          locale={ko}
-          showIcon
-          dateFormat="yyyy.MM.dd"
-          selected={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
-          icon={<Calendar className="mt-2" />}
-          className="bg-white rounded-lg outline-1 outline-lightgray h-11"
-          renderCustomHeader={({ date, decreaseMonth, increaseMonth }) => (
-            <div className="flex items-center justify-center gap-2">
-              <button
-                type="button"
-                className="cursor-pointer"
-                aria-label="이전 달로 이동"
-                onClick={decreaseMonth}
-              >
-                <ChevronLeft color="var(--color-subtext)" />
-              </button>
-              {`${getYear(date)}년 ${getMonth(date) + 1}월`}
-              <button
-                type="button"
-                className="cursor-pointer"
-                aria-label="다음 달로 이동"
-                onClick={increaseMonth}
-              >
-                <ChevronRight color="var(--color-subtext)" />
-              </button>
-            </div>
+        <Controller
+          name="date"
+          control={control}
+          defaultValue={new Date().toISOString().split('T')[0].replaceAll('-', '.')}
+          rules={{ required: '기록한 날짜를 선택해주세요.' }}
+          render={({ field }) => (
+            <DatePicker
+              id="date"
+              locale={ko}
+              showIcon
+              dateFormat="yyyy.MM.dd"
+              selected={field.value ? new Date(field.value) : new Date()}
+              onChange={(date) =>
+                field.onChange(date?.toISOString().split('T')[0].replaceAll('-', '.'))
+              }
+              icon={<Calendar className="mt-2" />}
+              className="bg-white rounded-lg outline-1 outline-lightgray h-11"
+              renderCustomHeader={({ date, decreaseMonth, increaseMonth }) => (
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    className="cursor-pointer"
+                    aria-label="이전 달로 이동"
+                    onClick={decreaseMonth}
+                  >
+                    <ChevronLeft color="var(--color-subtext)" />
+                  </button>
+                  {`${getYear(date)}년 ${getMonth(date) + 1}월`}
+                  <button
+                    type="button"
+                    className="cursor-pointer"
+                    aria-label="다음 달로 이동"
+                    onClick={increaseMonth}
+                  >
+                    <ChevronRight color="var(--color-subtext)" />
+                  </button>
+                </div>
+              )}
+            />
           )}
         />
+        {errors.date && <p className="text-xs text-error pt-1">{errors.date.message}</p>}
       </section>
       <section>
         <Textarea
           id="memo"
-          name="memo"
           label="메모"
           labelClassName="label"
           placeholder="와인에 대한 메모를 남겨주세요."
+          {...register('memo')}
         />
       </section>
       <section>
         <span className="inline-block mb-2 label">사진</span>
         <div className="flex gap-2">
           {Array.from({ length: 3 }, (_, i) => (
-            <div className="overflow-hidden rounded-lg aspect-square grow-1">
-              <label htmlFor={'img' + i}>
-                {imgURL[i] ? (
-                  <img src={imgURL[i]} alt={'와인 이미지' + i} />
+            <div key={i} className="overflow-hidden rounded-lg aspect-square flex-1">
+              <label
+                htmlFor={'imgURL' + i}
+                aria-label={`이미지${i + 1} 업로드`}
+                className="contents"
+              >
+                {preview[i] ? (
+                  <img
+                    src={preview[i]}
+                    alt={'미리보기' + (i + 1)}
+                    className="h-full object-cover"
+                  />
                 ) : (
                   <div className="flex items-center justify-center h-full bg-lightgray">
                     <Camera color="var(--color-subtext)" size={36} />
                   </div>
                 )}
               </label>
-              <input type="file" id={'img' + i} name={'img' + i} className="hidden"></input>
+              <input
+                type="file"
+                accept="image/*"
+                id={'imgURL' + i}
+                className="hidden"
+                {...register(`imgURL.${i}`)}
+                // 이미지 미리보기 표시
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const newPreview = [...preview];
+                    newPreview[i] = URL.createObjectURL(file);
+                    setPreview(newPreview);
+                  }
+                }}
+              ></input>
             </div>
           ))}
         </div>
       </section>
+      <div className="flex justify-end">
+        <Button submit>기록하기</Button>
+      </div>
     </form>
   );
 }
