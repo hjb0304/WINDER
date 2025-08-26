@@ -39,10 +39,10 @@ function RecordsNewPage() {
     const newURL = data.imgURL
       ? await Promise.all(
           data.imgURL.map(async (file) => {
-            if (!file[0]) return null;
+            if (!file) return null;
 
             const formData = new FormData();
-            formData.append('file', file[0]);
+            formData.append('file', file);
             formData.append('upload_preset', import.meta.env.CLOUDINARY_UPLOAD_PRESET);
 
             try {
@@ -66,16 +66,7 @@ function RecordsNewPage() {
   };
 
   return (
-    <form
-      className="flex flex-col gap-6"
-      onSubmit={handleSubmit(
-        (data) => {
-          console.log('제출', data);
-          (e) => e.preventDefault();
-        },
-        (errors) => console.log('Validation Errors', errors),
-      )}
-    >
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <section>
         <Input
           id="name"
@@ -265,41 +256,50 @@ function RecordsNewPage() {
         <span className="inline-block mb-2 label">사진</span>
         <div className="flex gap-2">
           {Array.from({ length: 3 }, (_, i) => (
-            <div key={i} className="overflow-hidden rounded-lg aspect-square flex-1">
-              <label
-                htmlFor={'imgURL' + i}
-                aria-label={`이미지${i + 1} 업로드`}
-                className="contents"
-              >
-                {preview[i] ? (
-                  <img
-                    src={preview[i]}
-                    alt={'미리보기' + (i + 1)}
-                    className="h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-lightgray">
-                    <Camera color="var(--color-subtext)" size={36} />
-                  </div>
-                )}
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                id={'imgURL' + i}
-                className="hidden"
-                {...register(`imgURL.${i}`)}
-                // 이미지 미리보기 표시
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const newPreview = [...preview];
-                    newPreview[i] = URL.createObjectURL(file);
-                    setPreview(newPreview);
-                  }
-                }}
-              ></input>
-            </div>
+            <Controller
+              key={i}
+              name={`imgURL.${i}`}
+              control={control}
+              render={({ field }) => (
+                <div key={i} className="overflow-hidden rounded-lg aspect-square flex-1">
+                  <label
+                    htmlFor={'imgURL' + i}
+                    aria-label={`이미지${i + 1} 업로드`}
+                    className="contents"
+                  >
+                    {preview[i] ? (
+                      <img
+                        src={preview[i]}
+                        alt={'미리보기' + (i + 1)}
+                        className="h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full bg-lightgray">
+                        <Camera color="var(--color-subtext)" size={36} />
+                      </div>
+                    )}
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id={'imgURL' + i}
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      // RHF에 file 객체 저장
+                      field.onChange(file);
+
+                      // 이미지 미리보기 표시
+                      if (file) {
+                        const newPreview = [...preview];
+                        newPreview[i] = URL.createObjectURL(file);
+                        setPreview(newPreview);
+                      }
+                    }}
+                  ></input>
+                </div>
+              )}
+            />
           ))}
         </div>
       </section>
