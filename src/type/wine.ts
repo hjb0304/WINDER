@@ -11,15 +11,23 @@ export interface WineInfo {
   name: string;
   country: string;
   imgURL: string;
-  rating: string;
+  rating: number;
   type: string;
 }
 
 export interface MyWineInfo extends Omit<WineInfo, 'id' | 'country' | 'imgURL'> {
   id: number;
   country?: string;
-  imgURL?: string[];
+  grape?: string;
   year?: number;
+  notes: {
+    sweetness: number;
+    acidity: number;
+    tannin: number;
+    body: number;
+    finish: number;
+  };
   date: string;
   memo?: string;
+  imgURL?: string[];
 }
