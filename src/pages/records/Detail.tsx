@@ -1,27 +1,31 @@
-import { getWine } from '@/api/wine';
+import { deleteWine, getWine } from '@/api/wine';
 import Button from '@/components/Button';
 import FavoriteButton from '@/components/FavoriteButton';
+import Modal from '@/components/Modal';
 import SubTitle from '@/components/SubTitle';
 import type { MyWineInfo } from '@/type/wine';
 import { BottleWine, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function RecordsDetailPage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<MyWineInfo | null>();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isFailModalOpen, setisFailModalOpen] = useState(false);
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  // 와인 데이터 불러오기
+  // 와인 기록 상세 조회
   const getWineData = async () => {
     try {
       setLoading(true);
       const data = id ? await getWine(id) : null;
       setData(data);
     } catch (error) {
-      console.error('데이터를 불러올 수 없습니다.');
+      console.error('데이터를 불러올 수 없습니다.', error);
     } finally {
       setLoading(false);
     }
@@ -31,10 +35,23 @@ function RecordsDetailPage() {
     getWineData();
   }, []);
 
+  // 와인 기록 삭제
+  const handleDelete = async () => {
+    try {
+      if (id) {
+        await deleteWine(id);
+        setIsSuccessModalOpen(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setisFailModalOpen(true);
+    }
+  };
+
   return (
     <>
       {loading ? (
-        <p>데이터를 불러오는 중입니다.</p>
+        <p>와인 기록 목록을 불러오는 중입니다.</p>
       ) : (
         <section className="flex flex-col gap-6">
           <div className="relative h-48 overflow-hidden rounded-lg">
@@ -95,18 +112,32 @@ function RecordsDetailPage() {
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <Button
-              to={`/records/edit?name=${data?.name}&country=${data?.country}&type=${data?.type}&imgurl=${data?.imgURL}`}
-              size="sm"
-            >
+            <Button to={'/records/edit'} size="sm">
               수정
             </Button>
-            <Button to={`/records/`} outlined size="sm">
+            <Button outlined size="sm" onClick={handleDelete}>
               삭제
             </Button>
           </div>
         </section>
       )}
+      <Modal
+        isOpen={isSuccessModalOpen}
+        message={`와인 기록이 삭제되었습니다.`}
+        handleCancel={() => setIsSuccessModalOpen(false)}
+        handleConfirm={() => {
+          setIsSuccessModalOpen(false);
+          navigate('/records');
+        }}
+        hideCancelButton
+      />
+      <Modal
+        isOpen={isFailModalOpen}
+        message={`와인 기록 삭제에 실패했습니다.`}
+        handleCancel={() => setisFailModalOpen(false)}
+        handleConfirm={() => setisFailModalOpen(false)}
+        hideCancelButton
+      />
     </>
   );
 }
