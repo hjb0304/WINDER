@@ -16,7 +16,6 @@ export interface WineInfo {
 }
 
 export interface MyWineInfo extends Omit<WineInfo, 'id' | 'country' | 'imgURL'> {
-  id: number;
   country?: string;
   grape?: string;
   year?: number;
