@@ -1,4 +1,4 @@
-import { Star, X } from 'lucide-react';
+import { BottleWine, Star, X } from 'lucide-react';
 import type { RefObject } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -6,10 +6,10 @@ interface CardProps {
   imgURL: string;
   name: string;
   type?: string;
-  rating?: string;
+  rating?: number;
   date?: string;
   showCloseButton?: boolean;
-  ref: RefObject<HTMLAnchorElement | null> | null;
+  ref?: RefObject<HTMLAnchorElement | null> | null;
   url: string;
 }
 
@@ -20,8 +20,14 @@ function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: C
       className="flex items-center px-3 py-2 bg-white border-b-1 border-lightgray"
       ref={ref}
     >
-      <div className="rounded-lg me-2 w-14 aspect-square shrink-0">
-        <img src={imgURL} alt={name} />
+      <div className="rounded-lg me-2 w-14 aspect-square shrink-0 overflow-hidden">
+        {imgURL ? (
+          <img src={imgURL} alt={name} />
+        ) : (
+          <div className="bg-lightgray h-full flex justify-center items-center">
+            <BottleWine color="var(--color-subtext)" />
+          </div>
+        )}
       </div>
       <div className="me-auto">
         <p className="mb-0.5">{name}</p>
