@@ -39,7 +39,7 @@
     font-family: 'Pretendard Variable', sans-serif;
   }
   img {
-    @apply object-contain w-full max-h-full;
+    @apply object-cover w-full h-full;
   }
 }
 
