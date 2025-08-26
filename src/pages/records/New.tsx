@@ -23,7 +23,6 @@ function RecordsNewPage() {
   const pathname = location.pathname.split('/')[2];
   const params = useParams();
   const id = params.id;
-  console.log(pathname, params);
 
   const wineOptions = [
     { text: '레드', value: 'reds' },
@@ -59,7 +58,33 @@ function RecordsNewPage() {
   };
 
   useEffect(() => {
-    getWineData();
+    if (pathname === 'edit') {
+      getWineData();
+    } else {
+      const queryParams = new URLSearchParams(location.search);
+      const data = {
+        name: queryParams.get('name') ?? undefined,
+        country: queryParams.get('country') ?? undefined,
+        type: queryParams.get('type') ?? undefined,
+        grape: undefined,
+        year: undefined,
+        notes: {
+          sweetness: 0,
+          acidity: 0,
+          tannin: 0,
+          body: 0,
+          finish: 0,
+        },
+        date: undefined,
+        memo: undefined,
+        imgURL: queryParams.get('imgurl') ? [queryParams.get('imgurl') as string] : [],
+      };
+
+      reset(data);
+      queryParams.get('imgurl')
+        ? setPreview([queryParams.get('imgurl') as string])
+        : setPreview([]);
+    }
   }, []);
 
   const onSubmit = async (data: MyWineInfo) => {
