@@ -11,14 +11,17 @@ interface ModalProps {
 }
 
 function Modal({ isOpen, message, handleCancel, handleConfirm, hideCancelButton }: ModalProps) {
-  if (!isOpen) return null;
+  if (!isOpen) {
+    document.body.style.overflow = 'auto';
+    return null;
+  }
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
+    document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+
+    return () => {
       document.body.style.overflow = 'auto';
-    }
+    };
   }, [isOpen]);
 
   return (
