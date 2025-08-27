@@ -24,7 +24,7 @@ function AppRoutes() {
       <Route path="/records" element={<RecordsPage />}></Route>
       <Route path="/records/:id" element={<RecordsDetailPage />}></Route>
       <Route path="/records/new" element={<RecordsNewPage />}></Route>
-      <Route path="/records/edit" element={<RecordsNewPage />}></Route>
+      <Route path="/records/edit/:id" element={<RecordsNewPage />}></Route>
       <Route path="/favorite" element={<FavoritePage />}></Route>
       <Route path="/winelist" element={<WineListPage />}></Route>
       <Route path="/winelist/:id" element={<WineDetail />}></Route>
