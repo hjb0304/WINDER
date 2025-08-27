@@ -1,3 +1,4 @@
+import { addFavorite, deleteFavorite } from '@/api/favorite';
 import Button from '@/components/Button';
 import FavoriteButton from '@/components/FavoriteButton';
 import SubTitle from '@/components/SubTitle';
@@ -34,7 +35,7 @@ function WineDetailPage() {
             name: wineData?.wine,
             country: wineData.location.split('\n')[0],
             imgURL: wineData.image,
-            rating: wineData.rating.average,
+            rating: Number(wineData.rating.average),
             type: id ? id?.split('-')[0] : '',
           }
         : null;
@@ -51,6 +52,23 @@ function WineDetailPage() {
     getWineData();
   }, []);
 
+  // 찜 목록에 와인 추가/삭제
+  const handleAddFovorite = async () => {
+    try {
+      if (id) {
+        if (!isFavorite) {
+          await addFavorite(id);
+          setIsFavorite(true);
+        } else {
+          await deleteFavorite(id);
+          setIsFavorite(false);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       {loading ? (
@@ -59,12 +77,7 @@ function WineDetailPage() {
         <section className="flex flex-col gap-6">
           <div className="relative h-48 rounded-lg">
             <img src={data?.imgURL} alt={data?.name} />
-            <FavoriteButton
-              onClick={() => {
-                setIsFavorite(!isFavorite);
-              }}
-              isFavorite={isFavorite}
-            />
+            <FavoriteButton onClick={handleAddFovorite} isFavorite={isFavorite} />
           </div>
           <div className="flex flex-col gap-1">
             <SubTitle>{data?.name ? data?.name : ''}</SubTitle>
