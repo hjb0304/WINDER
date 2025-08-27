@@ -55,9 +55,9 @@ function WineDetailPage() {
   // 찜 목록에 와인 추가/삭제
   const handleAddFovorite = async () => {
     try {
-      if (id) {
+      if (data && id) {
         if (!isFavorite) {
-          await addFavorite(id);
+          await addFavorite(data);
           setIsFavorite(true);
         } else {
           await deleteFavorite(id);
