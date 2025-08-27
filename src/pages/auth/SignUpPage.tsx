@@ -190,7 +190,7 @@ function SignUpPage() {
         isOpen={isModalOpen}
         message={modalMessage}
         handleCancel={() => setIsModalOpen(false)}
-        handleConfirm={user ? () => navigate('/') : () => setIsModalOpen(false)}
+        handleConfirm={user ? () => navigate('/home') : () => setIsModalOpen(false)}
         hideCancelButton
       ></Modal>
     </>

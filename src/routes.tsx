@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '@/pages/home';
 import FavoritePage from '@/pages/favorite';
 import MyPage from '@/pages/my';
@@ -16,7 +16,8 @@ import PairingResultsPage from '@/pages/pairing/Results';
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />}></Route>
+      <Route path="/" element={<Navigate to="/login" replace />}></Route>
+      <Route path="/home" element={<HomePage />}></Route>
       <Route path="/login" element={<LoginPage />}></Route>
       <Route path="/signup" element={<SignUpPage />}></Route>
       <Route path="/my" element={<MyPage />}></Route>
