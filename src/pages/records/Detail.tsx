@@ -1,17 +1,23 @@
 import { deleteWine, getWine } from '@/api/wine';
 import Button from '@/components/Button';
-import FavoriteButton from '@/components/FavoriteButton';
 import Modal from '@/components/Modal';
 import SubTitle from '@/components/SubTitle';
 import type { MyWineInfo } from '@/type/wine';
 import { BottleWine, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  ResponsiveContainer,
+} from 'recharts';
 
 function RecordsDetailPage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<MyWineInfo | null>();
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isFailModalOpen, setisFailModalOpen] = useState(false);
 
@@ -48,6 +54,29 @@ function RecordsDetailPage() {
     }
   };
 
+  const tastingData = [
+    {
+      subject: '단맛',
+      A: data?.notes.sweetness,
+    },
+    {
+      subject: '산미',
+      A: data?.notes.acidity,
+    },
+    {
+      subject: '탄닌',
+      A: data?.notes.tannin,
+    },
+    {
+      subject: '바디감',
+      A: data?.notes.body,
+    },
+    {
+      subject: '여운',
+      A: data?.notes.finish,
+    },
+  ];
+
   return (
     <>
       {loading ? (
@@ -62,12 +91,6 @@ function RecordsDetailPage() {
                 <BottleWine size={60} color="var(--color-subtext)" />
               </div>
             )}
-            <FavoriteButton
-              onClick={() => {
-                setIsFavorite(!isFavorite);
-              }}
-              isFavorite={isFavorite}
-            />
           </div>
           <div className="flex flex-col gap-1">
             <SubTitle>{data?.name ? data?.name : ''}</SubTitle>
@@ -85,7 +108,20 @@ function RecordsDetailPage() {
           </div>
           <div>
             <span className="inline-block mb-2 label">테이스팅 차트</span>
-            <div></div>
+            <ResponsiveContainer width="100%" height={300}>
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={tastingData}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="subject" />
+                <PolarRadiusAxis tick={false} axisLine={false} tickCount={4} />
+                <Radar
+                  name="WineTasting"
+                  dataKey="A"
+                  stroke="var(--color-primary)"
+                  fill="var(--color-primary)"
+                  fillOpacity={0.6}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
           </div>
           <div>
             <span className="inline-block mb-2 label">마신 날짜</span>
@@ -112,7 +148,7 @@ function RecordsDetailPage() {
             </div>
           </div>
           <div className="flex justify-end gap-2">
-            <Button to={'/records/edit'} size="sm">
+            <Button to={`/records/edit/${id}`} size="sm">
               수정
             </Button>
             <Button outlined size="sm" onClick={handleDelete}>
