@@ -98,6 +98,7 @@ function RecordsPage() {
               name={item.name}
               rating={item.rating}
               url={`${item.id}`}
+              date={item.date}
             ></Card>
           ))}
         </section>
