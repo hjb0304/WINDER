@@ -96,12 +96,14 @@ function PairingPage() {
 
   return (
     <section>
-      <div className="flex mb-4">
+      <div className="flex mb-4" role="tablist">
         <Button
           full
           outlined={tab === 'wine'}
           onClick={() => setTab('food')}
           className="rounded-tr-none rounded-br-none"
+          role="tab"
+          aria-selected={tab === 'food'}
         >
           음식 선택
         </Button>
@@ -110,6 +112,8 @@ function PairingPage() {
           outlined={tab === 'food'}
           onClick={() => setTab('wine')}
           className="rounded-tl-none rounded-bl-none"
+          role="tab"
+          aria-selected={tab === 'wine'}
         >
           와인 선택
         </Button>
@@ -120,11 +124,13 @@ function PairingPage() {
             <Link
               to={`results/${item.link}`}
               className={
-                'border-1 border-lightgray rounded-lg px-2 py-5 flex items-center gap-2 group transition hover:bg-stone-100 label'
+                'border border-lightgray rounded-lg px-2 py-5 flex items-center gap-2 group transition hover:bg-stone-100 label'
               }
             >
               <span
-                className={`rounded-full w-10 h-10 flex justify-center items-center transition group-hover:scale-110 group-hover:rotate-6}`}
+                className={
+                  'rounded-full w-10 h-10 flex justify-center items-center transition group-hover:scale-110 group-hover:rotate-6'
+                }
                 style={{ background: item.color }}
               >
                 {item.icon}
