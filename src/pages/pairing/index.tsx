@@ -1,95 +1,8 @@
 import Button from '@/components/Button';
-import { Apple, Beef, CakeSlice, Drumstick, Fish, Salad } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import cheese from '@/assets/img/icon/cheese.svg';
-import spicy from '@/assets/img/icon/spicy.svg';
-import wine from '@/assets/img/icon/wine.svg';
-
-interface PairingDataInfo {
-  name: string;
-  color: string;
-  icon: ReactNode;
-  link: string;
-}
-
-interface PairingData {
-  food: PairingDataInfo[];
-  wine: PairingDataInfo[];
-}
-
-const data: PairingData = {
-  food: [
-    { name: '붉은 육류', color: '#B22222', icon: <Beef color="white" />, link: 'redmeat' },
-    { name: '흰 육류', color: '#DEB887', icon: <Drumstick color="white" />, link: 'whitemeat' },
-    { name: '해산물', color: '#5DAED1', icon: <Fish color="white" />, link: 'seafood' },
-    { name: '야채', color: '#3AA23F', icon: <Salad color="white" />, link: 'veg' },
-    {
-      name: '치즈',
-      color: '#FFC107',
-      icon: <img src={cheese} alt="" className="w-6 h-6" />,
-      link: 'cheese',
-    },
-    { name: '디저트', color: '#FF9EAD', icon: <CakeSlice color="white" />, link: 'dessert' },
-    { name: '과일', color: '#FFA07A', icon: <Apple color="white" />, link: 'fruits' },
-    {
-      name: '매운 음식',
-      color: '#CC3700',
-      icon: <img src={spicy} alt="" className="w-6 h-6" />,
-      link: 'spicy',
-    },
-  ],
-  wine: [
-    {
-      name: '까베르네 쇼비뇽',
-      color: '#8B0000',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'cabernet-sauvignon',
-    },
-    {
-      name: '멜롯',
-      color: '#B22222',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'merlot',
-    },
-    {
-      name: '피노누아',
-      color: '#CD5C5C',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'pinot-noir',
-    },
-    {
-      name: '리슬링',
-      color: '#FFF176',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'riesling',
-    },
-    {
-      name: '쇼비뇽 블랑',
-      color: '#66D6AA',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'sauvignon-blanc',
-    },
-    {
-      name: '샤도네이',
-      color: '#FFD54F',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'chardonnay',
-    },
-    {
-      name: '스파클링',
-      color: '#E6C77F',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'sparkling',
-    },
-    {
-      name: '로제',
-      color: '#FFC0CB',
-      icon: <img src={wine} alt="" className="w-6 h-6" />,
-      link: 'rose',
-    },
-  ],
-};
+import type { PairingData, PairingDataInfo } from '@/type/pairing';
+import { pairingData } from '@/data/pairing';
 
 function PairingPage() {
   const [tab, setTab] = useState<keyof PairingData>('food');
@@ -119,7 +32,7 @@ function PairingPage() {
         </Button>
       </div>
       <ul className="grid grid-cols-2 gap-3">
-        {data[tab].map((item: PairingDataInfo, i) => (
+        {pairingData[tab].map((item: PairingDataInfo, i) => (
           <li key={i}>
             <Link
               to={`results/${item.link}`}
