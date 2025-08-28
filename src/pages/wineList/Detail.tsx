@@ -79,12 +79,21 @@ function WineDetailPage() {
       ) : (
         <section className="flex flex-col gap-6">
           <div className="relative h-48 rounded-lg">
-            <img src={data?.imgURL} alt={data?.name} />
+            <img src={data?.imgURL} alt={data?.name} className="object-contain" />
             <FavoriteButton onClick={handleAddFovorite} isFavorite={isFavorite} />
           </div>
           <div className="flex flex-col gap-1">
             <SubTitle>{data?.name ? data?.name : ''}</SubTitle>
-            <p className="text-subtext">{`${isNaN(Number(last)) ? '' : last + ' - '}${data?.type} - ${data?.country}`}</p>
+            <p className="text-subtext">
+              {' '}
+              {!isNaN(Number(last)) && (
+                <span className="after:content-['-'] after:mx-0.5">{Number(last)}</span>
+              )}
+              <span>{data?.type}</span>
+              {data?.country && (
+                <span className="before:content-['-'] before:mx-0.5">{data.country}</span>
+              )}
+            </p>
             <div className="flex items-center gap-1">
               <Star size={15} fill="var(--color-primary)" color="transparent" />
               <span>{data?.rating}</span>
@@ -94,13 +103,13 @@ function WineDetailPage() {
             <span className="inline-block mb-2 label">사진</span>
             <div className="flex gap-2">
               <div className="rounded-lg aspect-square grow-1">
-                <img src={data?.imgURL} alt={data?.name} />
+                <img src={data?.imgURL} alt={data?.name} className="object-contain" />
               </div>
               <div className="rounded-lg aspect-square grow-1">
-                <img src={data?.imgURL} alt={data?.name} />
+                <img src={data?.imgURL} alt={data?.name} className="object-contain" />
               </div>
               <div className="rounded-lg aspect-square grow-1">
-                <img src={data?.imgURL} alt={data?.name} />
+                <img src={data?.imgURL} alt={data?.name} className="object-contain" />
               </div>
             </div>
           </div>

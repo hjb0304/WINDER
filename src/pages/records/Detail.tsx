@@ -95,10 +95,10 @@ function RecordsDetailPage() {
           <div className="flex flex-col gap-1">
             <SubTitle>{data?.name ? data?.name : ''}</SubTitle>
             <p className="text-subtext">
-              {data?.year && <span className="after:content-['-'] after:mx-1">{data.year}</span>}
+              {data?.year && <span className="after:content-['-'] after:mx-0.5">{data.year}</span>}
               <span>{data?.type}</span>
               {data?.country && (
-                <span className="before:content-['-'] before:mx-1">{data.country}</span>
+                <span className="before:content-['-'] before:mx-0.5">{data.country}</span>
               )}
             </p>
             <div className="flex items-center gap-1">
