@@ -25,7 +25,7 @@ function Button({
   const cursor = !disabled ? 'cursor-pointer' : '';
   const width = full ? 'w-full' : '';
   const color = outlined
-    ? 'bg-white text-primary border-primary hover:bg-primary hover:text-white'
+    ? 'bg-white text-primary border-primary hover:bg-light'
     : disabled
       ? 'bg-lightgray text-subtext border-lightgray'
       : 'bg-primary text-white border-primary hover:bg-hover';

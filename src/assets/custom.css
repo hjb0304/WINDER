@@ -9,6 +9,7 @@
   --color-gray: #aaaaaa;
   --color-error: #dc3545;
   --color-hover: #66001a;
+  --color-light: #7a001f1a;
 }
 
 @font-face {
@@ -74,7 +75,7 @@
 }
 
 .react-datepicker__day--keyboard-selected {
-  @apply bg-[#E4CCD2];
+  @apply bg-light;
 }
 
 .react-datepicker__day {
