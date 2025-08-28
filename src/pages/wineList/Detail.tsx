@@ -1,6 +1,7 @@
 import { addFavorite, deleteFavorite } from '@/api/favorite';
 import Button from '@/components/Button';
 import FavoriteButton from '@/components/FavoriteButton';
+import Modal from '@/components/Modal';
 import SubTitle from '@/components/SubTitle';
 import type { APIWineInfo, WineInfo } from '@/type/wine';
 import axios from 'axios';
@@ -12,6 +13,7 @@ function WineDetailPage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<WineInfo | null>();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { id } = useParams();
   const name: string[] | null = data?.name ? data?.name.split(' ') : null;
@@ -66,6 +68,7 @@ function WineDetailPage() {
       }
     } catch (error) {
       console.error(error);
+      setIsModalOpen(true);
     }
   };
 
@@ -110,6 +113,13 @@ function WineDetailPage() {
           </div>
         </section>
       )}
+      <Modal
+        isOpen={isModalOpen}
+        message={`찜 목록 추가에 실패했습니다.`}
+        handleCancel={() => setIsModalOpen(false)}
+        handleConfirm={() => setIsModalOpen(false)}
+        hideCancelButton
+      />
     </>
   );
 }
