@@ -12,11 +12,14 @@ import RecordsNewPage from '@/pages/records/New';
 import RecordsDetailPage from '@/pages/records/Detail';
 import MyInfoPage from '@/pages/my/Info';
 import PairingResultsPage from '@/pages/pairing/Results';
+import { useAuthStore } from '@/store/authStore';
 
 function AppRoutes() {
+  const { user } = useAuthStore();
+
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />}></Route>
+      <Route path="/" element={<Navigate to={user ? '/home' : '/login'} replace />}></Route>
       <Route path="/home" element={<HomePage />}></Route>
       <Route path="/login" element={<LoginPage />}></Route>
       <Route path="/signup" element={<SignUpPage />}></Route>
@@ -30,7 +33,7 @@ function AppRoutes() {
       <Route path="/winelist" element={<WineListPage />}></Route>
       <Route path="/winelist/:id" element={<WineDetail />}></Route>
       <Route path="/pairing" element={<PairingPage />}></Route>
-      <Route path="/pairing/results" element={<PairingResultsPage />}></Route>
+      <Route path="/pairing/results/:name" element={<PairingResultsPage />}></Route>
     </Routes>
   );
 }
