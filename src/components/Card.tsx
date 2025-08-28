@@ -22,7 +22,7 @@ function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: C
     >
       <div className="rounded-lg me-2 w-14 aspect-square shrink-0 overflow-hidden">
         {imgURL ? (
-          <img src={imgURL} alt={name} />
+          <img src={imgURL} alt={name} className="object-contain" />
         ) : (
           <div className="bg-lightgray h-full flex justify-center items-center">
             <BottleWine color="var(--color-subtext)" />
