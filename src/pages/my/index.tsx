@@ -5,9 +5,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from '@/components/Modal';
 import ProfileImgUpload from '@/components/ProfileImgUpload';
-import { logout } from '@/api/auth';
+import { deleteAccount, logout } from '@/api/auth';
+import { useAuthStore } from '@/store/authStore';
 
 function MyPage() {
+  const { user } = useAuthStore();
   const modalTypes = {
     logoutConfirm: {
       message: '로그아웃하시겠습니까?',
@@ -25,12 +27,6 @@ function MyPage() {
       message: '정말 탈퇴하시겠습니까?',
       confirm: () => {
         handleWithdraw();
-      },
-    },
-    withdrawSuccess: {
-      message: '회원 탈퇴되었습니다.',
-      confirm: () => {
-        setIsModalOpen(false);
       },
     },
     withdrawFail: {
@@ -56,7 +52,14 @@ function MyPage() {
   };
 
   // 회원 탈퇴
-  const handleWithdraw = () => {};
+  const handleWithdraw = async () => {
+    try {
+      await deleteAccount(user);
+    } catch (error) {
+      console.error(error);
+      setModalType('withdrawFail');
+    }
+  };
 
   return (
     <>
@@ -101,7 +104,14 @@ function MyPage() {
           >
             로그아웃
           </Button>
-          <button className="block mx-auto cursor-pointer" type="button">
+          <button
+            className="block mx-auto cursor-pointer"
+            type="button"
+            onClick={() => {
+              setModalType('withdrawConfirm');
+              setIsModalOpen(true);
+            }}
+          >
             회원 탈퇴
           </button>
         </div>
