@@ -17,7 +17,7 @@ function Navigation() {
           <li className="w-full" key={item.idx}>
             <NavLink
               className={({ isActive }) =>
-                `w-full h-full justify-items-center content-center inline-block ${isActive ? 'text-primary' : 'text-subtext'}`
+                `h-full justify-center items-center flex ${isActive ? 'text-primary' : 'text-subtext'}`
               }
               to={item.to}
               title={item.label}
