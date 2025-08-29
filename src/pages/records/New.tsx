@@ -279,7 +279,7 @@ function RecordsNewPage() {
                 locale={ko}
                 showIcon
                 dateFormat="yyyy.MM.dd"
-                selected={field.value ? new Date(field.value) : new Date()}
+                selected={field.value ? new Date(field.value.replaceAll('.', '-')) : new Date()}
                 onChange={(date) =>
                   field.onChange(date?.toISOString().split('T')[0].replaceAll('-', '.'))
                 }
