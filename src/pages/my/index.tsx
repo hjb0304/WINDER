@@ -121,8 +121,8 @@ function MyPage() {
     <>
       <section className="flex flex-col items-center gap-2">
         <ProfileImgUpload />
-        <SubTitle>송은지</SubTitle>
-        <span>dmswl0094@naver.com</span>
+        <SubTitle>{user?.displayName ? user.displayName : ''}</SubTitle>
+        <span>{user?.email}</span>
       </section>
       <section>
         <div className="py-4 border-b border-lightgray">
