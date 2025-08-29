@@ -7,6 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   labelClassName?: string;
   errorMessage?: string;
   messageClassName?: string;
+  full?: boolean;
 }
 
 function Input({
@@ -18,10 +19,11 @@ function Input({
   errorMessage,
   messageClassName,
   type,
+  full,
   ...props
 }: InputProps) {
   return (
-    <div className="flex flex-col w-full gap-2">
+    <div className={`flex flex-col w-full gap-2 ${full ? 'w-full' : ''}`}>
       {label && (
         <label htmlFor={id} className={labelClassName}>
           {label}
