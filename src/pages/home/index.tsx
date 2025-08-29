@@ -96,15 +96,20 @@ function HomePage() {
           </section>
           <section>
             <SubTitle>최근 기록</SubTitle>
-            {recordList?.map((item) => (
-              <Card
-                name={item.name}
-                type={item.type}
-                date={item.date}
-                imgURL={item.imgURL ? item.imgURL[0] : ''}
-                url={`/winelist/${item?.id}`}
-              />
-            ))}
+            {recordList?.length ? (
+              recordList?.map((item) => (
+                <Card
+                  key={item.id}
+                  name={item.name}
+                  type={item.type}
+                  date={item.date}
+                  imgURL={item.imgURL ? item.imgURL[0] : ''}
+                  url={`/winelist/${item?.id}`}
+                />
+              ))
+            ) : (
+              <p>최근 기록한 와인이 없습니다.</p>
+            )}
           </section>
         </>
       )}
