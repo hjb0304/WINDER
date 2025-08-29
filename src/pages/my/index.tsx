@@ -2,14 +2,26 @@ import Button from '@/components/Button';
 import SubTitle from '@/components/SubTitle';
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import Modal from '@/components/Modal';
 import ProfileImgUpload from '@/components/ProfileImgUpload';
-import { deleteAccount, logout } from '@/api/auth';
+import { deleteAccount, logout, reauthenticate } from '@/api/auth';
 import { useAuthStore } from '@/store/authStore';
+import Input from '@/components/Input';
+import type { ApiError } from '@/type/api';
+import { useNavigate } from 'react-router-dom';
 
 function MyPage() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<keyof typeof modalTypes | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordConfirmType, setPasswordConfirmType] = useState<'withdraw' | 'editInfo' | null>(
+    null,
+  );
+
   const modalTypes = {
     logoutConfirm: {
       message: '로그아웃하시겠습니까?',
@@ -26,7 +38,8 @@ function MyPage() {
     withdrawConfirm: {
       message: '정말 탈퇴하시겠습니까?',
       confirm: () => {
-        handleWithdraw();
+        setModalType('passwordConfirm');
+        setPasswordConfirmType('withdraw');
       },
     },
     withdrawFail: {
@@ -35,11 +48,31 @@ function MyPage() {
         setIsModalOpen(false);
       },
     },
+    passwordConfirm: {
+      message: '비밀번호를 입력해주세요.',
+      contents: (
+        <div className="w-full">
+          <label htmlFor="password" className="sr-only">
+            비밀번호
+          </label>
+          <Input
+            id="password"
+            name="password"
+            placeholder="비밀번호"
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            full
+          />
+        </div>
+      ),
+      confirm:
+        passwordConfirmType === 'withdraw' ? () => handleWithdraw() : () => handleReauthenticate(),
+    },
+    wrongPassword: {
+      message: '비밀번호가 일치하지 않습니다.',
+      confirm: () => setIsModalOpen(false),
+    },
   };
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<keyof typeof modalTypes | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // 로그아웃
   const handleLogout = async () => {
@@ -54,10 +87,33 @@ function MyPage() {
   // 회원 탈퇴
   const handleWithdraw = async () => {
     try {
-      await deleteAccount(user);
+      await deleteAccount(user, password);
     } catch (error) {
+      const e = error as ApiError;
+
       console.error(error);
-      setModalType('withdrawFail');
+      if (e.code === 'missing-password' || 'invalid-credential') {
+        setModalType('wrongPassword');
+      } else {
+        setModalType('withdrawFail');
+      }
+    }
+  };
+
+  // 사용자 재인증
+  const handleReauthenticate = async () => {
+    try {
+      await reauthenticate(user, password);
+      navigate('info');
+    } catch (error) {
+      const e = error as ApiError;
+
+      console.error(error);
+      if (e.code === 'missing-password' || 'invalid-credential') {
+        setModalType('wrongPassword');
+      } else {
+        setModalType('withdrawFail');
+      }
     }
   };
 
@@ -88,9 +144,17 @@ function MyPage() {
           <h3 className="mb-4 sub-title">계정 관리</h3>
           <div className="flex items-center justify-between">
             <span>내 정보 수정</span>
-            <Link to="info">
+            <button
+              type="button"
+              className="cursor-pointer"
+              onClick={() => {
+                setModalType('passwordConfirm');
+                setIsModalOpen(true);
+                setPasswordConfirmType('editInfo');
+              }}
+            >
               <ChevronRight color="var(--color-gray)" />
-            </Link>
+            </button>
           </div>
         </div>
         <div>
@@ -121,7 +185,10 @@ function MyPage() {
         handleCancel={() => setIsModalOpen(false)}
         handleConfirm={modalType ? modalTypes[modalType].confirm : () => {}}
         message={modalType ? modalTypes[modalType].message : ''}
-      ></Modal>
+        hideCancelButton={modalType === 'passwordConfirm'}
+      >
+        {modalType === 'passwordConfirm' && modalTypes[modalType]?.contents}
+      </Modal>
     </>
   );
 }

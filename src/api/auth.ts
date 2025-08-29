@@ -8,6 +8,8 @@ import {
   signOut,
   deleteUser,
   updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from 'firebase/auth';
 
 // 회원가입
@@ -47,19 +49,33 @@ export async function logout() {
 }
 
 // 회원 탈퇴
-export async function deleteAccount(user: typeof auth.currentUser) {
+export async function deleteAccount(user: typeof auth.currentUser, password: string) {
   try {
-    if (user) await deleteUser(user);
+    if (user && user.email) {
+      // 자격 증명(credential) 생성
+      const credential = EmailAuthProvider.credential(user?.email, password);
+
+      // 재인증
+      await reauthenticateWithCredential(user, credential);
+
+      await deleteUser(user);
+    }
   } catch (error) {
     const e = error as ApiError;
     throw e;
   }
 }
 
-// 프로필 이미지 변경
-export async function editProfileImg(user: typeof auth.currentUser, newImgURL: string) {
+// 프로필 이미지, 닉네임 변경
+export async function editInfo(
+  user: typeof auth.currentUser,
+  newNickname: string,
+  newImgURL: string,
+) {
   try {
-    if (user) await updateProfile(user, { photoURL: newImgURL });
+    if (user) {
+      await updateProfile(user, { displayName: newNickname, photoURL: newImgURL });
+    }
   } catch (error) {
     const e = error as ApiError;
     throw e;
@@ -76,10 +92,16 @@ export async function editPassword(user: typeof auth.currentUser, newPassword: s
   }
 }
 
-// 닉네임 변경
-export async function editNickname(user: typeof auth.currentUser, newNickname: string) {
+// 사용자 재인증
+export async function reauthenticate(user: typeof auth.currentUser, password: string) {
   try {
-    if (user) await updateProfile(user, { displayName: newNickname });
+    if (user && user.email) {
+      // 자격 증명(credential) 생성
+      const credential = EmailAuthProvider.credential(user?.email, password);
+
+      // 재인증
+      await reauthenticateWithCredential(user, credential);
+    }
   } catch (error) {
     const e = error as ApiError;
     throw e;
