@@ -32,7 +32,7 @@ function LoginPage() {
       const user = await login(data);
       if (user) {
         setUser(user);
-        navigate('/home');
+        navigate('/');
       }
     } catch (error) {
       const e = error as ApiError;

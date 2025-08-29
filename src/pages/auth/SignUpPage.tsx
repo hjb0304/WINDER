@@ -24,7 +24,6 @@ interface SignUpForm {
 function SignUpPage() {
   const [modalMessage, setModalMessage] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [isChecked, setIsChecked] = useState(false);
 
   const navigate = useNavigate();
   const { user, setUser } = useAuthStore();
@@ -37,37 +36,8 @@ function SignUpPage() {
     formState: { errors },
   } = useForm<SignUpForm>();
 
-  // 이메일 중복 확인
-  // const handleEmailCheck = async () => {
-  //   try {
-  //     console.log('체크할 이메일:', watch('email').trim());
-  //     const methods = await fetchSignInMethodsForEmail(auth, watch('email'));
-  //     console.log('반환값:', methods);
-
-  //     if (methods.length > 0) {
-  //       setModalMessage('이미 가입된 이메일입니다.');
-  //       setIsModalOpen(true);
-  //       setIsChecked(false);
-  //     } else {
-  //       setModalMessage('사용할 수 있는 이메일입니다.');
-  //       setIsModalOpen(true);
-  //       setIsChecked(true);
-  //     }
-  //   } catch (error) {
-  //     setModalMessage('올바른 이메일 형식이 아닙니다.');
-  //     setIsModalOpen(true);
-  //     setIsChecked(false);
-  //   }
-  // };
-
   // 회원가입
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
-    // if (!isChecked) {
-    //   setModalMessage('이메일 중복 확인을 해주세요.');
-    //   setIsModalOpen(true);
-    //   return;
-    // }
-
     try {
       const user = await signUp({
         email: data.email,
@@ -190,7 +160,7 @@ function SignUpPage() {
         isOpen={isModalOpen}
         message={modalMessage}
         handleCancel={() => setIsModalOpen(false)}
-        handleConfirm={user ? () => navigate('/home') : () => setIsModalOpen(false)}
+        handleConfirm={user ? () => navigate('/') : () => setIsModalOpen(false)}
         hideCancelButton
       ></Modal>
     </>

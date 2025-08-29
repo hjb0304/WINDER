@@ -13,15 +13,27 @@ import RecordsDetailPage from '@/pages/records/Detail';
 import MyInfoPage from '@/pages/my/Info';
 import PairingResultsPage from '@/pages/pairing/Results';
 import { useAuthStore } from '@/store/authStore';
+import EmptyPage from '@/pages/empty';
 
 function AppRoutes() {
   const { user } = useAuthStore();
 
+  // 로그인되지 않은 경우
+  if (!user) {
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/signup" element={<SignUpPage />}></Route>
+        <Route path="*" element={<Navigate to="/login" replace />}></Route>
+      </Routes>
+    );
+  }
+
+  // 로그인된 경우
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={user ? '/home' : '/login'} replace />}></Route>
-      <Route path="/home" element={<HomePage />}></Route>
-      <Route path="/login" element={<LoginPage />}></Route>
+      <Route path="/" element={<HomePage />}></Route>
+      <Route path="/login" element={<Navigate to="/" replace />}></Route>
       <Route path="/signup" element={<SignUpPage />}></Route>
       <Route path="/my" element={<MyPage />}></Route>
       <Route path="/my/info" element={<MyInfoPage />}></Route>
@@ -34,6 +46,7 @@ function AppRoutes() {
       <Route path="/winelist/:id" element={<WineDetail />}></Route>
       <Route path="/pairing" element={<PairingPage />}></Route>
       <Route path="/pairing/results/:name" element={<PairingResultsPage />}></Route>
+      <Route path="*" element={<EmptyPage />}></Route>
     </Routes>
   );
 }
