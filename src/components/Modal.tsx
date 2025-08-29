@@ -1,6 +1,6 @@
 import Button from '@/components/Button';
 import { X } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -8,9 +8,17 @@ interface ModalProps {
   handleCancel: () => void;
   handleConfirm: () => void;
   hideCancelButton?: boolean;
+  children?: ReactNode;
 }
 
-function Modal({ isOpen, message, handleCancel, handleConfirm, hideCancelButton }: ModalProps) {
+function Modal({
+  isOpen,
+  message,
+  handleCancel,
+  handleConfirm,
+  hideCancelButton,
+  children,
+}: ModalProps) {
   if (!isOpen) {
     document.body.style.overflow = 'auto';
     return null;
@@ -26,7 +34,7 @@ function Modal({ isOpen, message, handleCancel, handleConfirm, hideCancelButton 
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center w-full h-full bg-black/70 z-10"
+      className="fixed inset-0 z-10 flex items-center justify-center w-full h-full bg-black/70"
       onClick={() => {
         handleCancel();
       }}
@@ -46,7 +54,8 @@ function Modal({ isOpen, message, handleCancel, handleConfirm, hideCancelButton 
           <X />
         </button>
         <p className="mb-8">{message}</p>
-        <div className="flex gap-2">
+        {children}
+        <div className={`flex gap-2 w-full ${children ? 'justify-end' : 'justify-center'}`}>
           {!hideCancelButton && (
             <Button
               outlined
