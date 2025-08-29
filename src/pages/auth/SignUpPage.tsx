@@ -4,11 +4,12 @@ import Button from '@/components/Button';
 import Checkbox from '@/components/Checkbox';
 import Input from '@/components/Input';
 import Modal from '@/components/Modal';
+import ProfileImgUpload from '@/components/ProfileImgUpload';
 import { useAuthStore } from '@/store/authStore';
 import type { ApiError } from '@/type/api';
-import { CameraIcon } from 'lucide-react';
+import axios from 'axios';
 import { useState } from 'react';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 interface SignUpForm {
@@ -24,6 +25,7 @@ interface SignUpForm {
 function SignUpPage() {
   const [modalMessage, setModalMessage] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [preview, setPreview] = useState('');
 
   const navigate = useNavigate();
   const { user, setUser } = useAuthStore();
@@ -33,17 +35,40 @@ function SignUpPage() {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<SignUpForm>();
 
   // 회원가입
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
+    let url = data.photoURL;
+
+    if (!url) return '';
+    // 이미 업로드된(string)인 경우 그대로 사용
+    if (typeof url === 'string') return url;
+
+    const formData = new FormData();
+    formData.append('file', url);
+    formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
+      url = res.data.secure_url;
+    } catch (error) {
+      console.error('업로드에 실패했습니다.', error);
+      url = '';
+    }
+
     try {
       const user = await signUp({
         email: data.email,
         password: data.password,
         nickname: data.nickname,
-        photoURL: '',
+        photoURL: url,
       });
       if (user) {
         setUser(user);
@@ -69,30 +94,41 @@ function SignUpPage() {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-3">
-          <div className="rounded-full bg-lightgray w-[100px] aspect-square flex justify-center items-center mx-auto">
-            <CameraIcon color="var(--color-gray)" fill="white" size={48} strokeWidth={1} />
-          </div>
+          <Controller
+            name="photoURL"
+            control={control}
+            render={({ field }) => (
+              <ProfileImgUpload
+                url={preview}
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  // RHF에 file 객체 저장
+                  field.onChange(file);
+
+                  // 이미지 미리보기 표시
+                  if (file) {
+                    const newPreview = URL.createObjectURL(file);
+                    setPreview(newPreview);
+                  }
+                }}
+              />
+            )}
+          ></Controller>
           <label htmlFor="email" className="inline-block mb-2 label">
             이메일
           </label>
-          <div className="flex gap-2">
-            <Input
-              id="email"
-              placeholder="이메일"
-              {...register('email', {
-                required: '이메일을 입력해주세요.',
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: '올바른 이메일 형식이 아닙니다.',
-                },
-              })}
-              errorMessage={errors.email?.message}
-              // onChange={() => setIsChecked(false)}
-            />
-            {/* <Button className="!h-11 shrink-0" onClick={handleEmailCheck}>
-              중복 확인
-            </Button> */}
-          </div>
+          <Input
+            id="email"
+            placeholder="이메일"
+            {...register('email', {
+              required: '이메일을 입력해주세요.',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: '올바른 이메일 형식이 아닙니다.',
+              },
+            })}
+            errorMessage={errors.email?.message}
+          />
           <Input
             id="password"
             label="비밀번호"

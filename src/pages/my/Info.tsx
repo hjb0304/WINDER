@@ -4,12 +4,13 @@ import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import ProfileImgUpload from '@/components/ProfileImgUpload';
 import { useAuthStore } from '@/store/authStore';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 interface InfoEditForm {
-  imgURL: string;
+  photoURL: string;
   password: string;
   passwordConfirm?: string;
   nickname: string;
@@ -18,6 +19,7 @@ interface InfoEditForm {
 function MyInfoPage() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isFailModalOpen, setIsFailModalOpen] = useState(false);
+  const [preview, setPreview] = useState('');
 
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -27,12 +29,35 @@ function MyInfoPage() {
     handleSubmit,
     watch,
     reset,
+    control,
     formState: { errors },
   } = useForm<InfoEditForm>();
 
   const onSubmit = async (data: InfoEditForm) => {
+    let url = data.photoURL;
+
+    if (!url) return '';
+    // 이미 업로드된(string)인 경우 그대로 사용
+    if (typeof url === 'string') return url;
+
+    const formData = new FormData();
+    formData.append('file', url);
+    formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
     try {
-      await editInfo(user, data.nickname, data.imgURL);
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
+      url = res.data.secure_url;
+    } catch (error) {
+      console.error('업로드에 실패했습니다.', error);
+      url = '';
+    }
+
+    try {
+      await editInfo(user, data.nickname, url);
       if (data.password !== '') {
         await editPassword(user, data.password);
       }
@@ -45,17 +70,37 @@ function MyInfoPage() {
 
   useEffect(() => {
     reset({
-      imgURL: user?.photoURL ?? '',
+      photoURL: user?.photoURL ?? '',
       password: '',
       passwordConfirm: '',
       nickname: user?.displayName ?? '',
     });
+    if (user?.photoURL) setPreview(user?.photoURL);
   }, []);
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <ProfileImgUpload />
+        <Controller
+          name="photoURL"
+          control={control}
+          render={({ field }) => (
+            <ProfileImgUpload
+              url={preview}
+              onChange={(e) => {
+                const file = e.target.files?.[0] ?? null;
+                // RHF에 file 객체 저장
+                field.onChange(file);
+
+                // 이미지 미리보기 표시
+                if (file) {
+                  const newPreview = URL.createObjectURL(file);
+                  setPreview(newPreview);
+                }
+              }}
+            />
+          )}
+        ></Controller>
         <Input
           id="password"
           label="비밀번호"

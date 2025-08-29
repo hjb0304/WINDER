@@ -120,7 +120,7 @@ function MyPage() {
   return (
     <>
       <section className="flex flex-col items-center gap-2">
-        <ProfileImgUpload />
+        <ProfileImgUpload url={user?.photoURL ?? ''} canUpload={false} />
         <SubTitle>{user?.displayName ? user.displayName : ''}</SubTitle>
         <span>{user?.email}</span>
       </section>
