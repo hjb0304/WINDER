@@ -10,7 +10,7 @@ function PairingResultsPage() {
   return (
     <>
       <section className="mb-4 space-y-2">
-        <div className="rounded-lg overflow-hidden">
+        <div className="overflow-hidden rounded-lg">
           <img src={name && pairingResultData[name].imgURL} alt="" />
         </div>
         <SubTitle>{name ? pairingResultData[name].name : ''}</SubTitle>
@@ -18,10 +18,10 @@ function PairingResultsPage() {
       </section>
       <section>
         <ul>
-          <li className="py-4 border-b border-lightgray flex gap-2">
+          <li className="flex gap-2 py-4 border-b border-lightgray">
             <div className="space-y-1">
               <p className="flex items-center gap-1.5">
-                <span className="flex justify-center items-center rounded-full w-8 h-8 bg-primary">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary">
                   <Trophy color="white" size={20} />
                 </span>
                 <span>최고의 페어링</span>
@@ -35,7 +35,7 @@ function PairingResultsPage() {
               <img src={name && pairingResultData[name].pairing[0].imgURL} alt="" />
             </div>
           </li>
-          <li className="py-4 border-b border-lightgray flex gap-2">
+          <li className="flex gap-2 py-4 border-b border-lightgray">
             <div className="space-y-1">
               <p className="flex items-center gap-1.5">
                 <span className="flex justify-center items-center rounded-full w-8 h-8 bg-[#C97B7B]">
@@ -46,13 +46,13 @@ function PairingResultsPage() {
               <span className="inline-block">
                 {name && pairingResultData[name].pairing[1].name}
               </span>
-              <p className="text-subtext sub">{name && pairingResultData[name].pairing[0].desc}</p>
+              <p className="text-subtext sub">{name && pairingResultData[name].pairing[1].desc}</p>
             </div>
             <div className="rounded-lg w-[6.25rem] aspect-square shrink-0 overflow-hidden">
               <img src={name && pairingResultData[name].pairing[1].imgURL} alt="" />
             </div>
           </li>
-          <li className="py-4 border-b border-lightgray flex gap-2">
+          <li className="flex gap-2 py-4 border-b border-lightgray">
             <div className="space-y-1">
               <p className="flex items-center gap-1.5">
                 <span className="flex justify-center items-center rounded-full w-8 h-8 bg-[#E6CBA8]">
@@ -63,7 +63,7 @@ function PairingResultsPage() {
               <span className="inline-block">
                 {name && pairingResultData[name].pairing[2].name}
               </span>
-              <p className="text-subtext sub">{name && pairingResultData[name].pairing[0].desc}</p>
+              <p className="text-subtext sub">{name && pairingResultData[name].pairing[2].desc}</p>
             </div>
             <div className="rounded-lg w-[6.25rem] aspect-square shrink-0 overflow-hidden">
               <img src={name && pairingResultData[name].pairing[2].imgURL} alt="" />
