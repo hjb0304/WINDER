@@ -5,10 +5,58 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from '@/components/Modal';
 import ProfileImgUpload from '@/components/ProfileImgUpload';
+import { logout } from '@/api/auth';
 
 function MyPage() {
+  const modalTypes = {
+    logoutConfirm: {
+      message: '로그아웃하시겠습니까?',
+      confirm: () => {
+        handleLogout();
+      },
+    },
+    logoutFail: {
+      message: '로그아웃에 실패했습니다.',
+      confirm: () => {
+        setIsModalOpen(false);
+      },
+    },
+    withdrawConfirm: {
+      message: '정말 탈퇴하시겠습니까?',
+      confirm: () => {
+        handleWithdraw();
+      },
+    },
+    withdrawSuccess: {
+      message: '회원 탈퇴되었습니다.',
+      confirm: () => {
+        setIsModalOpen(false);
+      },
+    },
+    withdrawFail: {
+      message: '회원 탈퇴에 실패했습니다.',
+      confirm: () => {
+        setIsModalOpen(false);
+      },
+    },
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<keyof typeof modalTypes | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // 로그아웃
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error(error);
+      setModalType('logoutFail');
+    }
+  };
+
+  // 회원 탈퇴
+  const handleWithdraw = () => {};
 
   return (
     <>
@@ -43,7 +91,14 @@ function MyPage() {
           </div>
         </div>
         <div>
-          <Button full className="mb-4">
+          <Button
+            full
+            className="mb-4"
+            onClick={() => {
+              setModalType('logoutConfirm');
+              setIsModalOpen(true);
+            }}
+          >
             로그아웃
           </Button>
           <button className="block mx-auto cursor-pointer" type="button">
@@ -54,8 +109,8 @@ function MyPage() {
       <Modal
         isOpen={isModalOpen}
         handleCancel={() => setIsModalOpen(false)}
-        handleConfirm={() => {}}
-        message=""
+        handleConfirm={modalType ? modalTypes[modalType].confirm : () => {}}
+        message={modalType ? modalTypes[modalType].message : ''}
       ></Modal>
     </>
   );
