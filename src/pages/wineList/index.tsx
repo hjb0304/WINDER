@@ -5,6 +5,8 @@ import type { APIWineInfo, WineInfo } from '@/type/wine';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 
+export const wineTypes = ['reds', 'whites', 'rose', 'sparkling'];
+
 function WineListPage() {
   const wineOptions = [
     { text: '전체', value: 'all' },
@@ -20,7 +22,6 @@ function WineListPage() {
   const observer = useRef<IntersectionObserver | null>(null);
   const observerRef = useRef<HTMLAnchorElement | null>(null);
   const PER_PAGE = 10;
-  const wineTypes = ['reds', 'whites', 'rose', 'sparkling'];
 
   const [allData, setAllData] = useState<WineInfo[]>([]);
   const [data, setData] = useState<WineInfo[]>([]);
