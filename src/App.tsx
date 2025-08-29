@@ -3,15 +3,9 @@ import Header from '@/components/Header';
 import AppRoutes from '@/routes';
 import { useLocation } from 'react-router-dom';
 import RecordButton from '@/components/RecordButton';
-import eruda from 'eruda';
-import { useEffect } from 'react';
 
 function App() {
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    eruda.init(); // 화면 하단에 작은 버튼 뜸 → 클릭하면 콘솔 열림
-  }, []);
 
   return (
     <div
