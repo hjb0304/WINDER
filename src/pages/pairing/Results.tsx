@@ -1,7 +1,7 @@
 import SubTitle from '@/components/SubTitle';
 import { pairingResultData } from '@/data/pairing';
 
-import { Smile, ThumbsUp, Trophy } from 'lucide-react';
+import { BottleWine, Smile, ThumbsUp, Trophy } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
 function PairingResultsPage() {
@@ -10,8 +10,14 @@ function PairingResultsPage() {
   return (
     <>
       <section className="mb-4 space-y-2">
-        <div className="overflow-hidden rounded-lg">
-          <img src={name && pairingResultData[name].imgURL} alt="" />
+        <div className="overflow-hidden rounded-lg h-48">
+          {name && pairingResultData[name].imgURL ? (
+            <img src={pairingResultData[name].imgURL} alt="" />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-lightgray">
+              <BottleWine size={60} color="var(--color-subtext)" />
+            </div>
+          )}
         </div>
         <SubTitle>{name ? pairingResultData[name].name : ''}</SubTitle>
         <p>{name && pairingResultData[name].desc}</p>
@@ -32,7 +38,13 @@ function PairingResultsPage() {
               <p className="text-subtext sub">{name && pairingResultData[name].pairing[0].desc}</p>
             </div>
             <div className="rounded-lg w-[6.25rem] aspect-square shrink-0 overflow-hidden">
-              <img src={name && pairingResultData[name].pairing[0].imgURL} alt="" />
+              {name && pairingResultData[name].pairing[0].imgURL ? (
+                <img src={pairingResultData[name].pairing[0].imgURL} alt="" />
+              ) : (
+                <div className="flex items-center justify-center h-full bg-lightgray">
+                  <BottleWine color="var(--color-subtext)" size={36} />
+                </div>
+              )}
             </div>
           </li>
           <li className="flex gap-2 py-4 border-b border-lightgray">
@@ -49,7 +61,13 @@ function PairingResultsPage() {
               <p className="text-subtext sub">{name && pairingResultData[name].pairing[1].desc}</p>
             </div>
             <div className="rounded-lg w-[6.25rem] aspect-square shrink-0 overflow-hidden">
-              <img src={name && pairingResultData[name].pairing[1].imgURL} alt="" />
+              {name && pairingResultData[name].pairing[1].imgURL ? (
+                <img src={pairingResultData[name].pairing[1].imgURL} alt="" />
+              ) : (
+                <div className="flex items-center justify-center h-full bg-lightgray">
+                  <BottleWine color="var(--color-subtext)" size={36} />
+                </div>
+              )}
             </div>
           </li>
           <li className="flex gap-2 py-4 border-b border-lightgray">
@@ -66,7 +84,13 @@ function PairingResultsPage() {
               <p className="text-subtext sub">{name && pairingResultData[name].pairing[2].desc}</p>
             </div>
             <div className="rounded-lg w-[6.25rem] aspect-square shrink-0 overflow-hidden">
-              <img src={name && pairingResultData[name].pairing[2].imgURL} alt="" />
+              {name && pairingResultData[name].pairing[2].imgURL ? (
+                <img src={pairingResultData[name].pairing[2].imgURL} alt="" />
+              ) : (
+                <div className="flex items-center justify-center h-full bg-lightgray">
+                  <BottleWine color="var(--color-subtext)" size={36} />
+                </div>
+              )}
             </div>
           </li>
         </ul>
