@@ -50,7 +50,12 @@ function MyInfoPage() {
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } },
       );
-      url = res.data.secure_url;
+      // 변환 URL 생성
+      const newUrl = res.data.secure_url.replace(
+        '/upload/',
+        '/upload/c_fill,w_100,h_100,f_webp,q_auto:good/',
+      );
+      url = newUrl;
     } catch (error) {
       console.error('업로드에 실패했습니다.', error);
       url = '';

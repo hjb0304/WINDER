@@ -106,7 +106,13 @@ function RecordsNewPage() {
                 formData,
                 { headers: { 'Content-Type': 'multipart/form-data' } },
               );
-              return res.data.secure_url;
+
+              // 변환 URL 생성
+              const newUrl = res.data.secure_url.replace(
+                '/upload/',
+                '/upload/c_fill,h_192,f_webp,q_auto:good/',
+              );
+              return newUrl;
             } catch (error) {
               console.error('업로드에 실패했습니다.', error);
               return null;
