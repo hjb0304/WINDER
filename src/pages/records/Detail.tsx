@@ -80,7 +80,7 @@ function RecordsDetailPage() {
   return (
     <>
       {loading ? (
-        <p>와인 기록 목록을 불러오는 중입니다.</p>
+        <p>와인 기록 정보를 불러오는 중입니다.</p>
       ) : (
         <section className="flex flex-col gap-6">
           <div className="relative h-48 overflow-hidden rounded-lg">
@@ -137,7 +137,7 @@ function RecordsDetailPage() {
               {Array.from({ length: 3 }, (_, i) => (
                 <div className="overflow-hidden rounded-lg aspect-square flex-1" key={i}>
                   {data?.imgURL?.[i] ? (
-                    <img src={data?.imgURL?.[i]} alt={data?.name} />
+                    <img src={data?.imgURL?.[i]} alt={data?.name} loading="lazy" />
                   ) : (
                     <div className="flex items-center justify-center h-full bg-lightgray">
                       <BottleWine color="var(--color-subtext)" size={36} />

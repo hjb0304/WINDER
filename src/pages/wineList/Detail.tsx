@@ -79,7 +79,7 @@ function WineDetailPage() {
       ) : (
         <section className="flex flex-col gap-6">
           <div className="relative h-48 rounded-lg">
-            <img src={data?.imgURL} alt={data?.name} className="object-contain" />
+            <img src={data?.imgURL} alt={data?.name} className="object-contain" loading="lazy" />
             <FavoriteButton onClick={handleAddFovorite} isFavorite={isFavorite} />
           </div>
           <div className="flex flex-col gap-1">
