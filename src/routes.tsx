@@ -1,19 +1,21 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from '@/pages/home';
-import FavoritePage from '@/pages/favorite';
-import MyPage from '@/pages/my';
-import PairingPage from '@/pages/pairing';
-import WineListPage from '@/pages/wineList';
-import RecordsPage from '@/pages/records';
-import LoginPage from '@/pages/auth/LoginPage';
-import SignUpPage from '@/pages/auth/SignUpPage';
-import WineDetail from '@/pages/wineList/Detail';
-import RecordsNewPage from '@/pages/records/New';
-import RecordsDetailPage from '@/pages/records/Detail';
-import MyInfoPage from '@/pages/my/Info';
-import PairingResultsPage from '@/pages/pairing/Results';
 import { useAuthStore } from '@/store/authStore';
-import EmptyPage from '@/pages/empty';
+import { lazy } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+const HomePage = lazy(() => import('@/pages/home'));
+const FavoritePage = lazy(() => import('@/pages/favorite'));
+const MyPage = lazy(() => import('@/pages/my'));
+const PairingPage = lazy(() => import('@/pages/pairing'));
+const WineListPage = lazy(() => import('@/pages/wineList'));
+const RecordsPage = lazy(() => import('@/pages/records'));
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
+const SignUpPage = lazy(() => import('@/pages/auth/SignUpPage'));
+const WineDetail = lazy(() => import('@/pages/wineList/Detail'));
+const RecordsNewPage = lazy(() => import('@/pages/records/New'));
+const RecordsDetailPage = lazy(() => import('@/pages/records/Detail'));
+const MyInfoPage = lazy(() => import('@/pages/my/Info'));
+const PairingResultsPage = lazy(() => import('@/pages/pairing/Results'));
+const EmptyPage = lazy(() => import('@/pages/empty'));
 
 function AppRoutes() {
   const { user } = useAuthStore();
