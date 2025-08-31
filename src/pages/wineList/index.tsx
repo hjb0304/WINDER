@@ -2,10 +2,31 @@ import Card from '@/components/Card';
 import Input from '@/components/Input';
 import Select from '@/components/Select';
 import type { APIWineInfo, WineInfo } from '@/type/wine';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export const wineTypes = ['reds', 'whites', 'rose', 'sparkling'];
+
+// 와인 데이터 불러오기
+const getWineData = async (): Promise<WineInfo[]> => {
+  const res = await Promise.all(
+    wineTypes.map((type) => axios.get<APIWineInfo[]>(`https://api.sampleapis.com/wines/${type}`)),
+  );
+  const newData = res.flatMap((res, i) =>
+    res.data.map(
+      (data: APIWineInfo): WineInfo => ({
+        id: `${wineTypes[i]}-${data.id}`,
+        name: data.wine,
+        country: data.location.split('\n')[0],
+        imgURL: data.image,
+        rating: Number(data.rating.average),
+        type: wineTypes[i],
+      }),
+    ),
+  );
+  return newData.sort((a, b) => a.name.localeCompare(b.name));
+};
 
 function WineListPage() {
   const wineOptions = [
@@ -23,73 +44,24 @@ function WineListPage() {
   const observerRef = useRef<HTMLAnchorElement | null>(null);
   const PER_PAGE = 10;
 
-  const [allData, setAllData] = useState<WineInfo[]>([]);
-  const [data, setData] = useState<WineInfo[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [loading, setLoading] = useState(false);
   const [wineOption, setWineOption] = useState(wineOptions[0].value);
   const [sortOption, setSortOption] = useState(sortOptions[0].value);
   const [search, setSearch] = useState('');
 
-  // 와인 데이터 불러오기
-  const getWineData = async () => {
-    try {
-      setLoading(true);
-      const res = await Promise.all(
-        wineTypes.map((type) =>
-          axios.get<APIWineInfo[]>(`https://api.sampleapis.com/wines/${type}`),
-        ),
-      );
-      const newData = res.flatMap((res, i) =>
-        res.data.map(
-          (data: APIWineInfo): WineInfo => ({
-            id: `${wineTypes[i]}-${data.id}`,
-            name: data.wine,
-            country: data.location.split('\n')[0],
-            imgURL: data.image,
-            rating: Number(data.rating.average),
-            type: wineTypes[i],
-          }),
-        ),
-      );
-      setAllData(newData.sort((a, b) => a.name.localeCompare(b.name)));
-      // 첫 10개 데이터만 보여주기
-      setData(newData.slice(0, PER_PAGE));
-    } catch (error) {
-      console.error('데이터를 불러올 수 없습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data: allData,
+    isLoading,
+    isError,
+  } = useQuery<WineInfo[], Error>({
+    queryKey: ['allWines'],
+    queryFn: getWineData,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    getWineData();
-  }, []);
-
-  // 마지막 요소 감지
-  useEffect(() => {
-    // 데이터 업데이트 시 기존 observer 해제
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 1.0 },
-    );
-
-    if (observerRef.current) observer.current.observe(observerRef.current);
-
-    // 컴포넌트 언마운트 시 observer 해제
-    return () => observer.current?.disconnect();
-  }, [data]);
-
-  // 다음 데이터 목록 불러오기
-  useEffect(() => {
-    // 조건 설정 시 전체 데이터 변경
-
+  // 조건 설정 시 전체 데이터 변경
+  const filteredList = useMemo(() => {
+    if (!allData) return [];
     // 필터링
     let resultData =
       wineOption !== 'all' ? allData.filter((item) => item.type === wineOption) : allData;
@@ -106,8 +78,37 @@ function WineListPage() {
         ? resultData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase().trim()))
         : resultData;
 
-    setData(resultData.slice(0, page * PER_PAGE));
-  }, [page, wineOption, sortOption, search]);
+    return resultData;
+  }, [allData, wineOption, sortOption, search]);
+
+  // 페이지 수만큼 데이터 보여주기
+  const slicedList = useMemo(() => filteredList.slice(0, page * PER_PAGE), [filteredList, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [wineOption, sortOption, search]);
+
+  // 마지막 요소 감지
+  useEffect(() => {
+    // 데이터 업데이트 시 기존 observer 해제
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          if (slicedList.length < filteredList.length) {
+            setPage((prev) => prev + 1);
+          }
+        }
+      },
+      { threshold: 1.0 },
+    );
+
+    if (observerRef.current) observer.current.observe(observerRef.current);
+
+    // 컴포넌트 언마운트 시 observer 해제
+    return () => observer.current?.disconnect();
+  }, [slicedList, filteredList]);
 
   return (
     <div>
@@ -137,14 +138,16 @@ function WineListPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
       </section>
-      {loading ? (
+      {isLoading ? (
         <p>데이터를 불러오는 중입니다.</p>
+      ) : isError ? (
+        <p>데이터를 불러올 수 없습니다.</p>
       ) : (
         <section>
-          {data?.map((item, i) => (
+          {slicedList?.map((item, i) => (
             <Card
               key={item.id}
-              ref={i === data.length - 1 ? observerRef : null}
+              ref={i === slicedList.length - 1 ? observerRef : null}
               imgURL={item.imgURL}
               name={item.name}
               rating={item.rating}

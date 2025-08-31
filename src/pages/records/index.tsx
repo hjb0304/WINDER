@@ -3,7 +3,13 @@ import Card from '@/components/Card';
 import Input from '@/components/Input';
 import Select from '@/components/Select';
 import type { MyWineInfo } from '@/type/wine';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useMemo, useState } from 'react';
+
+// 와인 데이터 불러오기
+const getWineData = async (): Promise<MyWineInfo[]> => {
+  return await getWineList();
+};
 
 function RecordsPage() {
   const wineOptions = [
@@ -19,45 +25,42 @@ function RecordsPage() {
     { text: '별점순', value: 'rating' },
   ];
 
-  const [data, setData] = useState<MyWineInfo[]>([]);
-  const [loading, setLoading] = useState(false);
   const [wineOption, setWineOption] = useState(wineOptions[0].value);
   const [sortOption, setSortOption] = useState(sortOptions[0].value);
   const [search, setSearch] = useState('');
 
-  // 와인 데이터 불러오기
-  const getWineData = async () => {
-    try {
-      setLoading(true);
-      const data = await getWineList();
-      setData(data);
-    } catch (error) {
-      console.error('데이터를 불러올 수 없습니다.', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getWineData();
-  }, []);
+  const {
+    data: data,
+    isLoading,
+    isError,
+  } = useQuery<MyWineInfo[], Error>({
+    queryKey: ['wineRecords'],
+    queryFn: getWineData,
+    staleTime: 1000 * 60 * 5,
+  });
 
   // 필터링
-  let resultData = wineOption !== 'all' ? data.filter((item) => item.type === wineOption) : data;
+  const filteredList = useMemo(() => {
+    let resultData = wineOption !== 'all' ? data?.filter((item) => item.type === wineOption) : data;
 
-  // 정렬
-  resultData =
-    sortOption === 'name'
-      ? [...resultData].sort((a, b) => a.name.localeCompare(b.name))
-      : sortOption === 'rating'
-        ? [...resultData].sort((a, b) => Number(b.rating) - Number(a.rating))
+    if (!resultData) return [];
+
+    // 정렬
+    resultData =
+      sortOption === 'name'
+        ? [...resultData].sort((a, b) => a.name.localeCompare(b.name))
+        : sortOption === 'rating'
+          ? [...resultData].sort((a, b) => Number(b.rating) - Number(a.rating))
+          : resultData;
+
+    // 검색
+    resultData =
+      search.trim() !== ''
+        ? resultData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase().trim()))
         : resultData;
 
-  // 검색
-  resultData =
-    search.trim() !== ''
-      ? resultData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase().trim()))
-      : resultData;
+    return resultData;
+  }, [data, wineOption, sortOption, search]);
 
   return (
     <div>
@@ -87,11 +90,13 @@ function RecordsPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
       </section>
-      {loading ? (
+      {isLoading ? (
         <p>데이터를 불러오는 중입니다.</p>
+      ) : isError ? (
+        <p>데이터를 불러올 수 없습니다.</p>
       ) : (
         <section>
-          {resultData?.map((item) => (
+          {filteredList?.map((item) => (
             <Card
               key={item.id}
               imgURL={item.imgURL?.[0] ?? ''}
