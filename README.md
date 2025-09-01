@@ -1,9 +1,8 @@
-## 🍷 Winder
+## 🍷 WINDER 프로젝트 소개
 
-와인을 기록하고 추천받는 와인 매니저 서비스  
-Firebase + React + Vite 기반 프로젝트
+사용자가 마셨던 와인에 대한 정보를 상세하게 기록할 수 있는 모바일 웹 서비스입니다.
 
----
+🔗 **배포 링크**: [https://winder.vercel.app](https://winder.vercel.app)
 
 ## ✨ 주요 기능
 
@@ -29,44 +28,38 @@ Firebase + React + Vite 기반 프로젝트
   - 와인 선택 → 추천 음식 표시
 - 🙋 마이페이지
   - 프로필 수정
-  - 기록 통계 차트
-  - 데이터 백업/복원
-- ⚙️ 설정
-  - 다크모드
-  - 알림 토글
-  - 계정 관리 (로그인/로그아웃)
-
----
+  - 로그아웃
+  - 회원 탈퇴
 
 ## 🛠 기술 스택
 
-- **Frontend**: React, TypeScript, Vite
-- **State Management**: React Query / Zustand
-- **Backend**: Firebase (Auth, Firestore, Functions)
-- **Image Upload**: Cloudinary
-- **Chart**: Chart.js / Recharts
-
----
+| 분야                 | 기술 스택                                                                                                                                                                                                                                                                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Frontend**         | <img src="https://img.shields.io/badge/react-%2361DAFB.svg?&style=for-the-badge&logo=react&logoColor=black" /> <img src="https://img.shields.io/badge/typescript-%233178C6.svg?&style=for-the-badge&logo=typescript&logoColor=white" /> <img src="https://img.shields.io/badge/tailwind%20css-%2338B2AC.svg?&style=for-the-badge&logo=tailwind%20css&logoColor=white" /> |
+| **State Management** | ![React Query](https://img.shields.io/badge/-React%20Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white) <img src="https://img.shields.io/badge/zustand-000000?style=for-the-badge&logo=zustand&logoColor=yellow" />                                                                                                                                    |
+| **Backend**          | <img src="https://img.shields.io/badge/firebase-%23FFCA28.svg?&style=for-the-badge&logo=firebase&logoColor=black" />                                                                                                                                                                                                                                                     |
+| **Image Upload**     | <img src="https://img.shields.io/badge/cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white" />                                                                                                                                                                                                                                                         |
+| **Chart**            | <img src="https://img.shields.io/badge/recharts-00C49F?style=for-the-badge&logo=recharts&logoColor=white" />                                                                                                                                                                                                                                                             |
 
 ## 📂 프로젝트 구조
 
 ```bash
 src
+ ┣ api/            # API 호출 함수
+ ┣ assets/         # 이미지, 아이콘, css
+ ┣ data/           # 와인/음식 데이터
  ┣ components/     # UI 컴포넌트
+ ┣ lib/            # firebase 설정
  ┣ pages/          # 페이지 단위 컴포넌트
- ┣ hooks/          # 커스텀 훅
- ┣ lib/            # Firebase, API 등 외부 라이브러리
  ┣ store/          # 전역 상태 관리
- ┣ styles/         # 전역 스타일
- ┗ utils/          # 유틸 함수
+ ┗ type/           # 타입 파일
 ```
-
----
 
 ## 🔑 환경 변수 설정
 
 ### Firebase 설정
 
+```
 VITE_FIREBASE_API_KEY=your_firebase_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your_project_id
@@ -74,41 +67,33 @@ VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
 
 ### Cloudinary 설정
 
+```
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_UPLOAD_PRESET=your_unsigned_upload_preset
+```
 
----
+## 🚀 설치&실행 방법
 
-## 🚀 실행 방법
-
-### 패키지 설치
-
+```
+git clone https://github.com/username/winder.git
+cd winder
 npm install
-
-### 개발 서버 실행
-
 npm run dev
+```
 
-### 빌드
-
-npm run build
-
----
-
-## 📌 향후 계획
+## 📌 일정
 
 ✅ 1차: 핵심 기능 (회원가입/로그인, 홈, 와인 목록/상세, 기록, 찜)
 
 ✅ 2차: 확장 기능 (기록 상세 관리, 음식 페어링)
 
-🚧 3차: 마이페이지, 설정, 통계, 다크모드
+🚧 3차: 마이페이지, 설정, 성능/접근성 개선
 
----
-
-👨‍💻 팀원
+## 👨‍💻 팀원
 
 Frontend: 배희정
 
