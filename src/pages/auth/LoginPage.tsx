@@ -2,8 +2,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '@/components/Button';
 import logo from '@/assets/img/logo.svg';
 import Input from '@/components/Input';
-import kakaoLogo from '@/assets/img/kakao_logo.svg';
-import naverLogo from '@/assets/img/naver_logo.svg';
+// import kakaoLogo from '@/assets/img/kakao_logo.svg';
+// import naverLogo from '@/assets/img/naver_logo.svg';
 import { useAuthStore } from '@/store/authStore';
 import { login } from '@/api/auth';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -80,7 +80,7 @@ function LoginPage() {
         <Link to="/signup" className="inline-block w-full mb-4 text-center text-subtext">
           계정이 없으신가요? 회원가입
         </Link>
-        <div className="flex justify-center gap-2">
+        {/* <div className="flex justify-center gap-2">
           <button
             className="w-12 rounded-lg aspect-square bg-[#FFE812] justify-items-center"
             aria-label="카카오 로그인"
@@ -93,7 +93,7 @@ function LoginPage() {
           >
             <img src={naverLogo} alt="네이버 로고"></img>
           </button>
-        </div>
+        </div> */}
       </div>
       <Modal
         isOpen={isModalOpen}
