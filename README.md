@@ -2,7 +2,7 @@
 
 사용자가 마셨던 와인에 대한 정보를 상세하게 기록할 수 있는 모바일 웹 서비스입니다.
 
-🔗 **배포 링크**: [winder.vercel.app](https://winder.vercel.app)
+🔗 **배포 링크**: [https://winder-eight.vercel.app](https://winder-eight.vercel.app)
 
 ## ✨ 주요 기능
 
