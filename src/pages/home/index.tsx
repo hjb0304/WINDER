@@ -80,7 +80,12 @@ function HomePage() {
               className="w-full h-[12.5rem] rounded-lg inline-block"
               to={`/winelist/${todayWine?.id}`}
             >
-              <img src={todayWine?.imgURL} alt="" className="object-contain" />
+              <img
+                src={todayWine?.imgURL}
+                alt={todayWine?.name}
+                className="object-contain"
+                height={200}
+              />
             </Link>
             <SubTitle>오늘의 추천 와인</SubTitle>
             <p>{todayWine?.name}</p>
