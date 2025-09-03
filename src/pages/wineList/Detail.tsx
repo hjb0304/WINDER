@@ -95,7 +95,7 @@ function WineDetailPage() {
               )}
             </p>
             <div className="flex items-center gap-1">
-              <Star size={15} fill="var(--color-primary)" color="transparent" />
+              <Star size={15} fill="var(--color-primary)" color="transparent" aria-label="별점" />
               <span>{data?.rating}</span>
             </div>
           </div>

@@ -133,6 +133,7 @@ function MyPage() {
               type="button"
               className={`flex items-center w-10 h-6 p-1 rounded-2xl cursor-pointer transition transform ${isDarkMode ? 'bg-primary' : 'bg-gray'}`}
               onClick={() => setIsDarkMode(!isDarkMode)}
+              aria-label={isDarkMode ? '라이트 모드로 변경' : '다크 모드로 변경'}
             >
               <span
                 className={`inline-block w-4 h-4 bg-white rounded-full transition transform ${isDarkMode ? 'translate-x-4' : 'translate-x-0'}`}
@@ -152,6 +153,7 @@ function MyPage() {
                 setIsModalOpen(true);
                 setPasswordConfirmType('editInfo');
               }}
+              aria-label="내 정보 수정으로 이동"
             >
               <ChevronRight color="var(--color-gray)" />
             </button>

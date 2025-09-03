@@ -18,7 +18,7 @@ function PairingResultsPage() {
             </picture>
           ) : (
             <div className="flex items-center justify-center h-full bg-lightgray">
-              <BottleWine size={60} color="var(--color-subtext)" />
+              <BottleWine size={60} color="var(--color-subtext)" aria-label="빈 와인 병" />
             </div>
           )}
         </div>
@@ -27,7 +27,7 @@ function PairingResultsPage() {
       </section>
       <section>
         <ul>
-          <li className="flex gap-2 py-4 border-b border-lightgray">
+          <li className="flex gap-2 py-4 border-b border-lightgray justify-between">
             <div className="space-y-1">
               <p className="flex items-center gap-1.5">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary">
@@ -45,12 +45,12 @@ function PairingResultsPage() {
                 <img src={pairingResultData[name].pairing[0].imgURL} alt="" />
               ) : (
                 <div className="flex items-center justify-center h-full bg-lightgray">
-                  <BottleWine color="var(--color-subtext)" size={36} />
+                  <BottleWine color="var(--color-subtext)" size={36} aria-label="빈 와인 병" />
                 </div>
               )}
             </div>
           </li>
-          <li className="flex gap-2 py-4 border-b border-lightgray">
+          <li className="flex gap-2 py-4 border-b border-lightgray justify-between">
             <div className="space-y-1">
               <p className="flex items-center gap-1.5">
                 <span className="flex justify-center items-center rounded-full w-8 h-8 bg-[#C97B7B]">
@@ -68,12 +68,12 @@ function PairingResultsPage() {
                 <img src={pairingResultData[name].pairing[1].imgURL} alt="" />
               ) : (
                 <div className="flex items-center justify-center h-full bg-lightgray">
-                  <BottleWine color="var(--color-subtext)" size={36} />
+                  <BottleWine color="var(--color-subtext)" size={36} aria-label="빈 와인 병" />
                 </div>
               )}
             </div>
           </li>
-          <li className="flex gap-2 py-4 border-b border-lightgray">
+          <li className="flex gap-2 py-4 border-b border-lightgray justify-between">
             <div className="space-y-1">
               <p className="flex items-center gap-1.5">
                 <span className="flex justify-center items-center rounded-full w-8 h-8 bg-[#E6CBA8]">
@@ -91,7 +91,7 @@ function PairingResultsPage() {
                 <img src={pairingResultData[name].pairing[2].imgURL} alt="" />
               ) : (
                 <div className="flex items-center justify-center h-full bg-lightgray">
-                  <BottleWine color="var(--color-subtext)" size={36} />
+                  <BottleWine color="var(--color-subtext)" size={36} aria-label="빈 와인 병" />
                 </div>
               )}
             </div>

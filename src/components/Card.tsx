@@ -32,7 +32,7 @@ function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: C
           />
         ) : (
           <div className="bg-lightgray h-full flex justify-center items-center">
-            <BottleWine color="var(--color-subtext)" />
+            <BottleWine color="var(--color-subtext)" aria-label="빈 와인 병" />
           </div>
         )}
       </div>
@@ -43,7 +43,7 @@ function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: C
             type
           ) : rating ? (
             <div className="flex items-center gap-1">
-              <Star size={15} fill="var(--color-primary)" color="transparent" />
+              <Star size={15} fill="var(--color-primary)" color="transparent" aria-label="별점" />
               <span>{rating}</span>
             </div>
           ) : (

@@ -90,7 +90,7 @@ function HomePage() {
                 />
               ) : (
                 <div className="flex items-center justify-center h-full bg-lightgray">
-                  <BottleWine color="var(--color-subtext)" size={36} />
+                  <BottleWine color="var(--color-subtext)" size={36} aria-label='빈 와인 병'/>
                 </div>
               )}
             </Link>
@@ -106,7 +106,7 @@ function HomePage() {
               )}
             </p>
             <div className="flex items-center gap-1">
-              <Star size={15} fill="var(--color-primary)" color="transparent" />
+              <Star size={15} fill="var(--color-primary)" color="transparent" aria-label="별점" />
               <span>{todayWine?.rating}</span>
             </div>
           </section>
