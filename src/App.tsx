@@ -19,8 +19,12 @@ function App() {
         >
           <AppRoutes />
         </main>
-        {pathname !== '/login' && pathname !== '/signup' && <Navigation />}
-        <RecordButton />
+        {pathname !== '/login' && pathname !== '/signup' && (
+          <>
+            <Navigation />
+            <RecordButton />
+          </>
+        )}
       </div>
     </Suspense>
   );
