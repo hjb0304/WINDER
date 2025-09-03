@@ -85,6 +85,7 @@ function HomePage() {
                 alt={todayWine?.name}
                 className="object-contain"
                 height={200}
+                loading="eager"
               />
             </Link>
             <SubTitle>오늘의 추천 와인</SubTitle>
