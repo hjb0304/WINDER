@@ -49,12 +49,13 @@ function LoginPage() {
 
   return (
     <>
-      <div className="w-[220px] mx-auto mt-14">
+      <h1 className="w-[220px] mx-auto mt-14">
         <img src={logo} alt="WINDER 로고" />
-      </div>
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input
           id="email"
+          label="이메일"
           className="mb-4 mt-[1px]"
           placeholder="이메일"
           errorMessage={errors.email?.message}

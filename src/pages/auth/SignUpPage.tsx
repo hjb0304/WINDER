@@ -94,9 +94,9 @@ function SignUpPage() {
 
   return (
     <>
-      <div className="w-[220px] mx-auto mt-14">
+      <h1 className="w-[220px] mx-auto mt-14">
         <img src={logo} alt="WINDER 로고" />
-      </div>
+      </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-3">
           <Controller
