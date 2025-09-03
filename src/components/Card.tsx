@@ -25,7 +25,7 @@ function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: C
           <img
             src={imgURL}
             alt={name}
-            className="object-contain"
+            className={imgURL.includes('vivino') ? 'object-contain' : ''}
             loading="lazy"
             width={56}
             height={56}

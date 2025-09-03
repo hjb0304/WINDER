@@ -5,7 +5,7 @@ import { wineTypes } from '@/pages/wineList';
 import type { APIWineInfo, MyWineInfo, WineInfo } from '@/type/wine';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { Star } from 'lucide-react';
+import { BottleWine, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // 와인 목록 불러오기
@@ -80,13 +80,19 @@ function HomePage() {
               className="w-full h-[12.5rem] rounded-lg inline-block"
               to={`/winelist/${todayWine?.id}`}
             >
-              <img
-                src={todayWine?.imgURL}
-                alt={todayWine?.name}
-                className="object-contain"
-                height={200}
-                loading="eager"
-              />
+              {todayWine?.imgURL ? (
+                <img
+                  src={todayWine?.imgURL}
+                  alt={todayWine?.name}
+                  className="object-contain"
+                  height={200}
+                  loading="eager"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full bg-lightgray">
+                  <BottleWine color="var(--color-subtext)" size={36} />
+                </div>
+              )}
             </Link>
             <SubTitle>오늘의 추천 와인</SubTitle>
             <p>{todayWine?.name}</p>
@@ -114,7 +120,7 @@ function HomePage() {
                   type={item.type}
                   date={item.date}
                   imgURL={item.imgURL ? item.imgURL[0] : ''}
-                  url={`/winelist/${item?.id}`}
+                  url={`/records/${item?.id}`}
                 />
               ))
             ) : (

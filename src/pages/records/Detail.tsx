@@ -85,7 +85,12 @@ function RecordsDetailPage() {
         <section className="flex flex-col gap-6">
           <div className="relative h-48 overflow-hidden rounded-lg">
             {data?.imgURL?.[0] ? (
-              <img src={data?.imgURL[0]} alt={data?.name} loading="eager" />
+              <img
+                src={data?.imgURL[0]}
+                alt={data?.name}
+                loading="eager"
+                className={data?.imgURL[0].includes('vivino') ? 'object-contain' : ''}
+              />
             ) : (
               <div className="flex items-center justify-center h-full bg-lightgray">
                 <BottleWine size={60} color="var(--color-subtext)" />
@@ -137,7 +142,12 @@ function RecordsDetailPage() {
               {Array.from({ length: 3 }, (_, i) => (
                 <div className="overflow-hidden rounded-lg aspect-square flex-1" key={i}>
                   {data?.imgURL?.[i] ? (
-                    <img src={data?.imgURL?.[i]} alt={data?.name} loading="lazy" />
+                    <img
+                      src={data?.imgURL?.[i]}
+                      alt={data?.name}
+                      loading="lazy"
+                      className={data?.imgURL?.[i].includes('vivino') ? 'object-contain' : ''}
+                    />
                   ) : (
                     <div className="flex items-center justify-center h-full bg-lightgray">
                       <BottleWine color="var(--color-subtext)" size={36} />
