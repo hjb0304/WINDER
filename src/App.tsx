@@ -19,11 +19,9 @@ function App() {
         >
           <AppRoutes />
         </main>
-        {pathname !== '/login' && pathname !== '/signup' && (
-          <>
-            <Navigation />
-            <RecordButton />
-          </>
+        {pathname !== '/login' && pathname !== '/signup' && <Navigation />}
+        {pathname !== '/login' && pathname !== '/signup' && !pathname.startsWith('/records/') && (
+          <RecordButton />
         )}
       </div>
     </Suspense>
