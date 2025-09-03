@@ -85,12 +85,22 @@ function RecordsDetailPage() {
         <section className="flex flex-col gap-6">
           <div className="relative h-48 overflow-hidden rounded-lg">
             {data?.imgURL?.[0] ? (
-              <img
-                src={data?.imgURL[0]}
-                alt={data?.name}
-                loading="eager"
-                className={data?.imgURL[0].includes('vivino') ? 'object-contain' : ''}
-              />
+              data?.imgURL[0].includes('vivino') ? (
+                <img
+                  src={data?.imgURL[0]}
+                  alt={data?.name}
+                  loading="eager"
+                  className="object-contain"
+                />
+              ) : (
+                <picture>
+                  <source
+                    srcSet={data?.imgURL[0].replace(/\.(jpg|jpeg|png)$/i, '.webp')}
+                    type="image/webp"
+                  />
+                  <img src={data?.imgURL[0]} alt={data?.name} loading="eager" />
+                </picture>
+              )
             ) : (
               <div className="flex items-center justify-center h-full bg-lightgray">
                 <BottleWine size={60} color="var(--color-subtext)" />

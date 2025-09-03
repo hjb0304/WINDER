@@ -12,7 +12,10 @@ function PairingResultsPage() {
       <section className="mb-4 space-y-2">
         <div className="overflow-hidden rounded-lg h-48">
           {name && pairingResultData[name].imgURL ? (
-            <img src={pairingResultData[name].imgURL} alt="" />
+            <picture>
+              <source srcSet={pairingResultData[name].imgURL + '.webp'} type="image/webp" />
+              <img src={pairingResultData[name].imgURL} alt="" loading="eager" />
+            </picture>
           ) : (
             <div className="flex items-center justify-center h-full bg-lightgray">
               <BottleWine size={60} color="var(--color-subtext)" />
