@@ -148,7 +148,7 @@ function WineListPage() {
             <Card
               key={item.id}
               ref={i === slicedList.length - 1 ? observerRef : null}
-              imgURL={item.imgURL}
+              src={item.imgURL}
               name={item.name}
               rating={item.rating}
               url={`${item.id}`}

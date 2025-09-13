@@ -99,7 +99,7 @@ function RecordsPage() {
           {filteredList?.map((item) => (
             <Card
               key={item.id}
-              imgURL={item.imgURL?.[0] ?? ''}
+              src={item.imgURL?.[0] ?? ''}
               name={item.name}
               rating={item.rating}
               url={`${item.id}`}

@@ -1,9 +1,9 @@
 import { BottleWine, Star, X } from 'lucide-react';
-import type { RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Link } from 'react-router-dom';
 
 interface CardProps {
-  imgURL: string;
+  src: string;
   name: string;
   type?: string;
   rating?: number;
@@ -13,7 +13,36 @@ interface CardProps {
   url: string;
 }
 
-function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: CardProps) {
+function Card({ src, name, type, rating, date, showCloseButton, ref, url }: CardProps) {
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (!imgRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // 화면에 들어오면 src 할당
+          if (entry.isIntersecting) {
+            setLoadedSrc(src);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        rootMargin: '72px',
+        threshold: 0.1,
+      },
+    );
+
+    observer.observe(imgRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [src]);
+
   return (
     <Link
       to={url}
@@ -21,14 +50,14 @@ function Card({ imgURL, name, type, rating, date, showCloseButton, ref, url }: C
       ref={ref}
     >
       <div className="rounded-lg me-2 w-14 aspect-square shrink-0 overflow-hidden">
-        {imgURL ? (
+        {src ? (
           <img
-            src={imgURL}
+            src={loadedSrc ?? ''}
             alt={name}
-            className={imgURL.includes('vivino') ? 'object-contain' : ''}
-            loading="lazy"
+            className={src.includes('vivino') ? 'object-contain' : ''}
             width={56}
             height={56}
+            ref={imgRef}
           />
         ) : (
           <div className="bg-lightgray h-full flex justify-center items-center">

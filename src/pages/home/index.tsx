@@ -90,7 +90,7 @@ function HomePage() {
                 />
               ) : (
                 <div className="flex items-center justify-center h-full bg-lightgray">
-                  <BottleWine color="var(--color-subtext)" size={36} aria-label='빈 와인 병'/>
+                  <BottleWine color="var(--color-subtext)" size={36} aria-label="빈 와인 병" />
                 </div>
               )}
             </Link>
@@ -119,7 +119,7 @@ function HomePage() {
                   name={item.name}
                   type={item.type}
                   date={item.date}
-                  imgURL={item.imgURL ? item.imgURL[0] : ''}
+                  src={item.imgURL ? item.imgURL[0] : ''}
                   url={`/records/${item?.id}`}
                 />
               ))

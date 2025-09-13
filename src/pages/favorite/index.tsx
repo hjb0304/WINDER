@@ -97,7 +97,7 @@ function FavoritePage() {
           {filteredList?.map((item) => (
             <Card
               key={item.id}
-              imgURL={item.imgURL}
+              src={item.imgURL}
               name={item.name}
               rating={item.rating}
               url={`/winelist/${item.id}`}
