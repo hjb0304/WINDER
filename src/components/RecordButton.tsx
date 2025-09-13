@@ -34,7 +34,7 @@ function RecordButton() {
     <button
       type="submit"
       className={`fixed flex items-center justify-center rounded-full bg-primary w-14 aspect-square right-4 bottom-[72px] cursor-pointer shadow-md transition duration-300
-          ${!visible ? 'opacity-0' : 'opacity-100'}`}
+          ${!visible ? 'opacity-0 hidden' : 'opacity-100'}`}
       onClick={() => navigate('/records/new')}
       aria-label="와인 기록하기"
       aria-hidden={!visible}
