@@ -52,7 +52,7 @@ function Card({ src, name, type, rating, date, showCloseButton, ref, url }: Card
       <div className="rounded-lg me-2 w-14 aspect-square shrink-0 overflow-hidden">
         {src ? (
           <img
-            src={loadedSrc ?? ''}
+            src={loadedSrc ?? undefined}
             alt={name}
             className={src.includes('vivino') ? 'object-contain' : ''}
             width={56}
