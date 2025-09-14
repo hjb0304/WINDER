@@ -10,26 +10,45 @@ import { Link } from 'react-router-dom';
 
 // 와인 목록 불러오기
 const getWineDataList = async (): Promise<WineInfo | null> => {
-  const wineType = wineTypes[Math.floor(Math.random() * wineTypes.length)];
+  const storageKey = 'todayWine';
+  const todayKey = new Date().toISOString().split('T')[0];
 
-  const res = await axios.get<APIWineInfo[]>(`https://api.sampleapis.com/wines/${wineType}`);
+  try {
+    const raw = localStorage.getItem(storageKey);
+    // 로컬 스토리지에 와인 데이터 있으면 반환
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.date === todayKey) return parsed.wine;
+    }
 
-  const wineList = res.data;
-  const wineId = Math.floor(Math.random() * wineList.length);
-  const selectedWine = wineList[wineId];
+    // 없으면 목록에서 랜덤으로 불러오기
+    const wineType = wineTypes[Math.floor(Math.random() * wineTypes.length)];
 
-  const newData: WineInfo | null = selectedWine
-    ? {
-        id: `${wineType}-${selectedWine.id}`,
-        name: selectedWine?.wine,
-        country: selectedWine.location.split('\n')[0],
-        imgURL: selectedWine.image,
-        rating: Number(selectedWine.rating.average),
-        type: wineType,
-      }
-    : null;
+    const res = await axios.get<APIWineInfo[]>(`https://api.sampleapis.com/wines/${wineType}`);
 
-  return newData;
+    const wineList = res.data;
+    const wineId = Math.floor(Math.random() * wineList.length);
+    const selectedWine = wineList[wineId];
+
+    const newData: WineInfo | null = selectedWine
+      ? {
+          id: `${wineType}-${selectedWine.id}`,
+          name: selectedWine?.wine,
+          country: selectedWine.location.split('\n')[0],
+          imgURL: selectedWine.image,
+          rating: Number(selectedWine.rating.average),
+          type: wineType,
+        }
+      : null;
+
+    // 로컬 스토리지에 와인 데이터와 오늘 날짜 저장
+    localStorage.setItem(storageKey, JSON.stringify({ wine: newData, date: todayKey }));
+
+    return newData;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 // 와인 기록 목록 불러오기
