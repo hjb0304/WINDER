@@ -1,4 +1,5 @@
 import { Star, StarHalf } from 'lucide-react';
+import { motion } from 'motion/react';
 
 function Rating({ value, onChange }: { value: number; onChange: (value: number) => void }) {
   // 각 별점 아이콘
@@ -18,7 +19,7 @@ function Rating({ value, onChange }: { value: number; onChange: (value: number) 
 
   // 별점 반환
   const stars = Array.from({ length: 5 }, (_, i) => (
-    <div key={i} className="relative">
+    <motion.div key={i} className="relative" whileTap={{ scale: 0.8 }}>
       <button
         className="absolute left-0 w-1/2 h-full cursor-pointer"
         type="button"
@@ -32,7 +33,7 @@ function Rating({ value, onChange }: { value: number; onChange: (value: number) 
         aria-label={i + 0.5 + '점'}
       ></button>
       <div className="pointer-events-none">{star(i)}</div>
-    </div>
+    </motion.div>
   ));
 
   return (

@@ -1,5 +1,6 @@
 import { BookOpenText, Heart, House, List, Utensils } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'motion/react';
 
 function Navigation() {
   const navItems = [
@@ -14,7 +15,7 @@ function Navigation() {
     <nav className="fixed bottom-0 w-full bg-white border-t border-t-lightgray">
       <ul className="flex h-14">
         {navItems.map((item) => (
-          <li className="w-full" key={item.idx}>
+          <motion.li className="w-full" key={item.idx} whileTap={{ scale: 0.8 }}>
             <NavLink
               className={({ isActive }) =>
                 `h-full justify-center items-center flex ${isActive ? 'text-primary' : 'text-subtext'}`
@@ -24,7 +25,7 @@ function Navigation() {
             >
               {item.icon}
             </NavLink>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </nav>
